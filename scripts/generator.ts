@@ -21,6 +21,7 @@ if (fs.existsSync(filePath)) {
 const template = `---
 title: ${lesson.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
 description: Learn about ${lesson} in ${language}
+order: 0
 ---
 
 # Introduction to ${lesson}

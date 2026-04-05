@@ -1,0 +1,8 @@
+{
+  "debounce": {
+    "order": 1
+  },
+  "custom-hooks": {
+    "order": 2
+  }
+}
