@@ -6,12 +6,14 @@ import { InteractiveLab } from '@/components/lab/InteractiveLab';
 import { DebounceShowcase } from '@/components/lab/frontend/react/DebounceShowcase';
 import { LocalStorageLab } from '@/components/lab/frontend/react/LocalStorageLab';
 import { ReactIntroLab } from '@/components/lab/frontend/react/ReactIntroLab';
+import { ContextApiLab } from '@/components/lab/frontend/react/ContextApiLab';
 
 const components = {
   InteractiveLab,
   DebounceShowcase,
   LocalStorageLab,
   ReactIntroLab,
+  ContextApiLab,
 };
 
 export default async function LessonPage({

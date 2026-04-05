@@ -19,7 +19,7 @@ if (fs.existsSync(filePath)) {
 }
 
 const template = `---
-title: ${lesson.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+title: ${lesson.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
 description: Learn about ${lesson} in ${language}
 order: 0
 ---
@@ -28,9 +28,19 @@ order: 0
 
 This is a generated lesson on ${lesson}.
 
-## Interactive Demo
+## Interactive Lab
 
-{/* Replace this with an interactive component */}
+<InteractiveLab title="${category}/${language}/${lesson}">
+  {/* Add your component here */}
+</InteractiveLab>
+
+## Basic Implementation
+
+Explain the core logic here with a code snippet:
+
+\`\`\`tsx
+// Your example code
+\`\`\`
 `;
 
 fs.writeFileSync(filePath, template, 'utf-8');
