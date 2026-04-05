@@ -1,0 +1,51 @@
+---
+title: Understanding useEffect
+description: Master side-effects, dependencies, and lifecycle management in React hooks.
+order: 1
+---
+
+React components are pure functions by default. But what if you need to talk to an API, set a timer, or manually update the DOM? That's where **Side Effects** come in.
+
+## The useEffect Hook
+
+`useEffect` allows you to perform side effects in functional components. It serves the same purpose as `componentDidMount`, `componentDidUpdate`, and `componentWillUnmount` in React classes, but unified into a single API.
+
+### The Dependency Array
+
+The most crucial part of `useEffect` is its second argument: the dependency array.
+
+1. **No array**: Runs after *every* render.
+2. **Empty array `[]`**: Runs only once (on mount).
+3. **With variables `[count]`**: Runs only when those variables change.
+
+## Interactive Lab: Effect Monitor
+
+In this lab, we have an effect that watches the **emerald count** state. Use the buttons to change the state and watch the **Effect Monitor** on the right to see exactly when the Effect vs. the **Cleanup** function runs.
+
+<InteractiveLab title="react/hooks/useEffect">
+  <UseEffectLab />
+</InteractiveLab>
+
+## Basic Implementation
+
+A common pattern is fetching data or setting up a subscription:
+
+```tsx
+import { useEffect, useState } from 'react';
+
+function UserProfile({ userId }) {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    // 1. Run the effect
+    const unsub = subscribeToUser(userId, (u) => setUser(u));
+
+    // 2. Return a cleanup function
+    return () => {
+      unsub();
+    };
+  }, [userId]); // 3. Re-run only if userId changes
+
+  return <div>{user?.name}</div>;
+}
+```

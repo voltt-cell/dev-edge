@@ -7,6 +7,7 @@ import { DebounceShowcase } from '@/components/lab/frontend/react/DebounceShowca
 import { LocalStorageLab } from '@/components/lab/frontend/react/LocalStorageLab';
 import { ReactIntroLab } from '@/components/lab/frontend/react/ReactIntroLab';
 import { ContextApiLab } from '@/components/lab/frontend/react/ContextApiLab';
+import { UseEffectLab } from '@/components/lab/frontend/react/UseEffectLab';
 
 const components = {
   InteractiveLab,
@@ -14,6 +15,7 @@ const components = {
   LocalStorageLab,
   ReactIntroLab,
   ContextApiLab,
+  UseEffectLab,
 };
 
 export default async function LessonPage({

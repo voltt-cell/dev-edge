@@ -2,13 +2,17 @@
   "intro": {
     "order": 0
   },
-  "debounce": {
-    "order": 1
+  "hooks-useeffect": {
+    "order": 1,
+    "title": "Mastering useEffect"
   },
-  "custom-hooks": {
+  "debounce": {
     "order": 2
   },
-  "context-api": {
+  "custom-hooks": {
     "order": 3
+  },
+  "context-api": {
+    "order": 4
   }
 }
