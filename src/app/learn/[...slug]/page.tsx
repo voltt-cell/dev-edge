@@ -5,11 +5,13 @@ import matter from 'gray-matter';
 import { InteractiveLab } from '@/components/lab/InteractiveLab';
 import { DebounceShowcase } from '@/components/lab/frontend/react/DebounceShowcase';
 import { LocalStorageLab } from '@/components/lab/frontend/react/LocalStorageLab';
+import { ReactIntroLab } from '@/components/lab/frontend/react/ReactIntroLab';
 
 const components = {
   InteractiveLab,
   DebounceShowcase,
   LocalStorageLab,
+  ReactIntroLab,
 };
 
 export default async function LessonPage({

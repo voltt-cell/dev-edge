@@ -1,4 +1,7 @@
 {
+  "intro": {
+    "order": 0
+  },
   "debounce": {
     "order": 1
   },
