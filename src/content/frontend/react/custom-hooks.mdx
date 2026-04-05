@@ -1,0 +1,55 @@
+---
+title: Master Custom Hooks
+description: Learn how to extract reusable logic into clean, testable Custom Hooks.
+---
+
+Custom Hooks are the most powerful pattern in React for sharing logic between components. They allow you to hide complex implementations behind a simple, expressive API.
+
+## Why Custom Hooks?
+
+Instead of repeating `useState` and `useEffect` logic in every component, you can wrap it in a function starting with `use`.
+
+### The `useLocalStorage` Pattern
+
+One of the most practical examples is persisting state to the browser's storage. Normally, you'd have to handle serialization, error checking, and synchronization manually. A Custom Hook handles all of this for you.
+
+```tsx
+import { useState, useEffect, useCallback } from 'react';
+
+export function useLocalStorage<T>(key: string, initialValue: T) {
+  const [storedValue, setStoredValue] = useState<T>(() => {
+    try {
+      const item = window.localStorage.getItem(key);
+      return item ? JSON.parse(item) : initialValue;
+    } catch (error) {
+      return initialValue;
+    }
+  });
+
+  const setValue = useCallback((value: T | ((val: T) => T)) => {
+    try {
+      const valueToStore = value instanceof Function ? value(storedValue) : value;
+      setStoredValue(valueToStore);
+      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+    } catch (error) {
+      console.warn(error);
+    }
+  }, [key, storedValue]);
+
+  return [storedValue, setValue] as const;
+}
+```
+
+## Interactive Lab
+
+Try it out below! Change the **Storage Key** and watch how the **Browser Local Storage** reflects the state. If you refresh the page or change the key back, your data will still be there.
+
+<InteractiveLab title="react/custom-hooks/useLocalStorage">
+  <LocalStorageLab />
+</InteractiveLab>
+
+## Best Practices
+
+1. **Naming**: Always start with `use`. This is how React's Linter knows to enforce the Rules of Hooks.
+2. **Pure Logic**: Custom Hooks should focus on logic, not UI. They return data, not JSX.
+3. **Composability**: You can call other hooks (built-in or custom) inside your Custom Hook!

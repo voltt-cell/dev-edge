@@ -1,0 +1,38 @@
+---
+title: React Debounce
+description: Learn how to optimize react re-renders and api calls using debounce.
+---
+
+# React Debounce
+
+Debouncing is a programming practice used to ensure that time-consuming tasks do not fire so often, making them more efficient and preventing performance issues.
+
+In React, debouncing is typically used for search inputs where firing an API request on every keystroke would overwhelm the server and cause a sluggish UI.
+
+## How it works
+Instead of executing a function immediately, a debounced function will wait for a certain amount of time (e.g., 500ms) after the *last* time it was called. If it’s called again before the time is up, the timer resets.
+
+<InteractiveLab title="React Debounce Timeline">
+  <DebounceShowcase />
+</InteractiveLab>
+
+## Basic implementation
+
+You can build a simple custom hook for debouncing in React:
+
+```tsx
+import { useState, useEffect } from 'react';
+
+export function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+  
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedValue(value), delay);
+    return () => clearTimeout(timer);
+  }, [value, delay]);
+  
+  return debouncedValue;
+}
+```
+
+Try typing rapidly into the lab and observe the timeline!

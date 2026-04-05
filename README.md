@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Dev-Edge: The Modern Developer Academy
 
-## Getting Started
+Dev-Edge is a premium, interactive e-learning platform designed for software engineers. Instead of passive video watching, Dev-Edge focuses on "learning by doing" through **Interactive Labs** where you can break and rebuild complex concepts directly in your browser.
 
-First, run the development server:
+## 🚀 Key Features
 
+- **Interactive MDX Lessons**: Rich technical content with embedded live React demonstrations.
+- **Dynamic Category Explorer**: Automated discovery of learning paths (Frontend, Backend, System Design, DevOps).
+- **Persistent State Tracking**: Custom hooks like `useLocalStorage` ensure your progress in labs is synced.
+- **Premium Aesthetics**: A glassmorphic, dark-mode-first UI built with Tailwind CSS and Framer Motion.
+- **Content Pipeline**: Automated lesson generation script for fast content scaling.
+
+## 🛠 Tech Stack
+
+- **Framework**: [Next.js 15 (App Router)](https://nextjs.org)
+- **Styling**: Tailwind CSS
+- **Content**: MDX (via `next-mdx-remote`)
+- **Icons**: Lucide React
+- **Animations**: Framer Motion
+- **Runtime**: Node.js / pnpm
+
+## 📁 Project Structure
+
+- `src/app/`: Next.js App Router pages and layouts.
+- `src/content/`: Organizing MDX lessons (e.g., `/frontend/react/hooks.mdx`).
+- `src/components/lab/`: Structured interactive components used inside MDX.
+- `src/hooks/`: Custom technical hooks (e.g., `useLocalStorage`, `useDebounce`).
+- `scripts/`: Development utilities including the content generator.
+
+## ✍️ Adding New Content
+
+We use a automated generator to maintain consistent structure for new lessons.
+
+### Generate a New Lesson
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npx tsx scripts/generator.ts [category] [technology] [lesson-slug]
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Example:**
+```bash
+npx tsx scripts/generator.ts frontend react use-callback
+```
+This creates a new MDX file at `src/content/frontend/react/use-callback.mdx`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Registering new Labs
+1. Create your React component in `src/components/lab/[category]/[tech]/`.
+2. Register it in the `components` object inside `src/app/learn/[...slug]/page.tsx`.
+3. Use it in your MDX:
+```mdx
+<InteractiveLab title="My Lab">
+  <MyNewComponent />
+</InteractiveLab>
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🚥 Getting Started
 
-## Learn More
+### 1. Install Dependencies
+```bash
+pnpm install
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 2. Run Development Server
+```bash
+pnpm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Open [http://localhost:3000](http://localhost:3000) to see the academy in action.
