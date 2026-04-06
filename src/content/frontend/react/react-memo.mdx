@@ -1,0 +1,52 @@
+---
+title: "React.memo: Component Shielding"
+description: "Protect your components from wasteful parent-triggered re-renders."
+order: 7
+---
+
+By default, when a parent component re-renders, **all of its children re-render too**. This is often fine, but if a child is "expensive" (like a giant table or a complex chart), you'll start to feel the lag. **React.memo** is a Higher-Order Component that tells React to skip the render if the props haven't changed.
+
+### The Concept: "Pure Components"
+When you wrap a component in `React.memo`, React will check the props from the *last* render. If they are exactly the same (shallow comparison), React will "memoize" the result and skip the expensive render function entirely.
+
+---
+
+## Interactive Lab: Dashboard Shielding
+
+In this lab, you can see how `React.memo` shields components from parent updates. Click the **Re-render Dashboard** button. Notice how notice how the cards don't "flash" because they are memoized.
+
+<InteractiveLab title="react/performance/reactmemo">
+  <ReactMemoLab />
+</InteractiveLab>
+
+---
+
+## How to use React.memo
+
+Wrapping a functional component is simple:
+
+```tsx
+const MyCard = React.memo(({ title, description }) => {
+  return (
+    <div className="card">
+      <h3>{title}</h3>
+      <p>{description}</p>
+    </div>
+  );
+});
+
+MyCard.displayName = 'MyCard'; // Recommended for debugging
+```
+
+### What breaks the shield?
+`React.memo` uses **Shallow Comparison**. If you pass:
+1. **A new object literal**: `props={{ name: 'John' }}`
+2. **A new array literal**: `props={[1, 2, 3]}`
+3. **A new function**: `props={() => {}}`
+
+Then `React.memo` will see a "change" and re-render anyway. This is why `useMemo` and `useCallback` are almost always used alongside `React.memo`.
+
+---
+
+## The Golden Rule
+Only use `React.memo` when a component renders too often with the same props and those renders are **slow**. Don't wrap every single component—comparing props also takes time!

@@ -1,0 +1,45 @@
+---
+title: "useCallback: Function Stability"
+description: "Master referential equality to prevent unnecessary component re-renders."
+order: 6
+---
+
+In JavaScript, functions are objects. And in React, newly created objects are never equal to previous ones: `() => {} !== () => {}`. This simple fact is the #1 cause of performance issues in React applications.
+
+### The Problem: Identical but Different
+Every time your component renders, every function inside it is "re-born". If you pass one of these functions to a child component, the child thinks its data has changed and re-renders too—even if the function's code is exactly the same!
+
+---
+
+## Interactive Lab: Parent Simulator
+
+In this lab, you can see how `useCallback` stabilizes function references. Try clicking the **Re-render Parent** button. Notice how the **Unstable** child flashes (re-renders) every time, while the one with `useCallback` stays perfectly still.
+
+<InteractiveLab title="react/performance/usecallback">
+  <UseCallbackLab />
+</InteractiveLab>
+
+---
+
+## How to use useCallback
+
+`useCallback` returns a memoized version of the callback that only changes if one of the dependencies has changed.
+
+```tsx
+// ❌ Re-created every render
+const handleClick = () => {
+  setCount(c => c + 1);
+};
+
+// ✅ Memoized: Stays the same until [dependencies] change
+const memoizedClick = useCallback(() => {
+  setCount(c => c + 1);
+}, []); // Empty array means it never changes
+```
+
+### When to use it?
+- **Passing functions to memoized children**: When a child uses `React.memo`, it relies on props being identical.
+- **Dependency for other hooks**: If a function is used in a `useEffect` dependency array.
+
+> [!IMPORTANT]
+> `useCallback` doesn't make the function *faster*. It just makes the **reference** stable so that *other* things (like `React.memo`) don't break.

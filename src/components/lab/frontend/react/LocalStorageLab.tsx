@@ -8,11 +8,11 @@ export function LocalStorageLab() {
   const [key, setKey] = useState('dev_edge_name');
   const [value, setValue] = useState('');
   const [storedValue, setStoredValue] = useLocalStorage<string | null>(key, null);
-  const [logs, setLogs] = useState<{ id: number; action: string; time: string }[]>([]);
+  const [logs, setLogs] = useState<{ id: string; action: string; time: string }[]>([]);
 
   // Function to log actions
   const addLog = (action: string) => {
-    setLogs(prev => [{ id: Date.now(), action, time: new Date().toLocaleTimeString() }, ...prev].slice(0, 5));
+    setLogs(prev => [{ id: `${Date.now()}-${Math.random()}`, action, time: new Date().toLocaleTimeString() }, ...prev].slice(0, 5));
   };
 
   // Sync the local input value with the stored value when key changes or storedValue updates

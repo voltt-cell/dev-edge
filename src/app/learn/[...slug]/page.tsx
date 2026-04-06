@@ -8,6 +8,9 @@ import { LocalStorageLab } from '@/components/lab/frontend/react/LocalStorageLab
 import { ReactIntroLab } from '@/components/lab/frontend/react/ReactIntroLab';
 import { ContextApiLab } from '@/components/lab/frontend/react/ContextApiLab';
 import { UseEffectLab } from '@/components/lab/frontend/react/UseEffectLab';
+import { UseMemoLab } from '@/components/lab/frontend/react/UseMemoLab';
+import { UseCallbackLab } from '@/components/lab/frontend/react/UseCallbackLab';
+import { ReactMemoLab } from '@/components/lab/frontend/react/ReactMemoLab';
 
 const components = {
   InteractiveLab,
@@ -16,6 +19,9 @@ const components = {
   ReactIntroLab,
   ContextApiLab,
   UseEffectLab,
+  UseMemoLab,
+  UseCallbackLab,
+  ReactMemoLab,
 };
 
 export default async function LessonPage({

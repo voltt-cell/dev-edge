@@ -14,5 +14,17 @@
   },
   "context-api": {
     "order": 4
+  },
+  "hooks-usememo": {
+    "order": 5,
+    "title": "useMemo"
+  },
+  "hooks-usecallback": {
+    "order": 6,
+    "title": "useCallback"
+  },
+  "react-memo": {
+    "order": 7,
+    "title": "React.memo"
   }
 }

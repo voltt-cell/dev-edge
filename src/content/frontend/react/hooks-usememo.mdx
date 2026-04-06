@@ -1,0 +1,50 @@
+---
+title: "useMemo: Result Caching"
+description: "Protect your app's performance by remembering expensive calculations."
+order: 5
+---
+
+React runs your component's function on every single render. If you have heavy loops, sorting, or complex math, your app will start to feel sluggish. **useMemo** is how you tell React to only recalculate when truly necessary.
+
+### The Concept: "Save Points"
+Think of `useMemo` as a "save point" for your data. Instead of re-calculating a complex value every time, React remembers the result and only updates it if certain dependencies change.
+
+---
+
+## Interactive Lab: Logic Lab
+
+In this lab, you can see how `useMemo` prevents "Ghost Re-calculations". Try clicking the **Update Unrelated State** button. Even in **Slow Mode**, notice how the UI stays responsive because `useMemo` skips the expensive filtering logic.
+
+<InteractiveLab title="react/performance/usememo">
+  <UseMemoLab />
+</InteractiveLab>
+
+---
+
+## Why useMemo?
+
+### 1. Skipping Expensive Math
+If you're sorting 10,000 items or running a recursive algorithm, you only want to do that when the data actually changes.
+
+```tsx
+const sortedData = useMemo(() => {
+  return heavySort(largeList);
+}, [largeList]); // Only re-sort if largeList changes
+```
+
+### 2. Referential Equality
+Sometimes you use an object or array as a dependency for *other* hooks (like `useEffect`). Since `[] !== []`, creating a new array every render will trigger those hooks unnecessarily. `useMemo` keeps the object's identity stable.
+
+```tsx
+const options = useMemo(() => ({ color: 'blue' }), []);
+
+useEffect(() => {
+  console.log("Only runs once!");
+}, [options]);
+```
+
+---
+
+## The Golden Rule
+**Measure first.** 
+Don't use `useMemo` for simple math like `a + b`. The overhead of storing the value and comparing dependencies might actually be *slower* than just doing the math!
