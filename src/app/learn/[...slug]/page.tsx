@@ -11,6 +11,9 @@ import { UseEffectLab } from '@/components/lab/frontend/react/UseEffectLab';
 import { UseMemoLab } from '@/components/lab/frontend/react/UseMemoLab';
 import { UseCallbackLab } from '@/components/lab/frontend/react/UseCallbackLab';
 import { ReactMemoLab } from '@/components/lab/frontend/react/ReactMemoLab';
+import { UseStateLab } from '@/components/lab/frontend/react/UseStateLab';
+import { UseRefLab } from '@/components/lab/frontend/react/UseRefLab';
+import { UseReducerLab } from '@/components/lab/frontend/react/UseReducerLab';
 
 const components = {
   InteractiveLab,
@@ -22,6 +25,9 @@ const components = {
   UseMemoLab,
   UseCallbackLab,
   ReactMemoLab,
+  UseStateLab,
+  UseRefLab,
+  UseReducerLab,
 };
 
 export default async function LessonPage({

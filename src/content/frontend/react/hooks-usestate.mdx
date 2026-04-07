@@ -1,0 +1,21 @@
+---
+title: "Understanding useState"
+description: "The foundational hook for adding state variables to your functional components."
+---
+
+State is how React remembers things. The `useState` hook allows you to add state variables to a component. It takes the initial state as an argument and returns an array with two entries: the current state value, and a function that lets you update it.
+
+### Core Concepts
+
+- **Initialization**: `useState` is called at the top level of your component.
+- **Updating**: When you call the set function (e.g., `setCount`), React will schedule a re-render of the component with the new value.
+- **Immutability**: You must replace the state object/array entirely rather than mutating it directly.
+
+<InteractiveLab title="UseStateLab.tsx">
+  <UseStateLab />
+</InteractiveLab>
+
+### When to use it?
+- Managing form inputs.
+- Toggling UI elements like modals and sidebars.
+- Simple counters or localized value tracking.

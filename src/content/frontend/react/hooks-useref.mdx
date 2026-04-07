@@ -1,0 +1,20 @@
+---
+title: "Mastering useRef"
+description: "Store mutable values that don't cause re-renders when updated."
+---
+
+The `useRef` hook has two primary use cases: interacting directly with DOM elements and storing mutable values across renders without triggering a re-render.
+
+### The Power of Mutability Without Renders
+
+Unlike `useState`, when you update the `.current` property of a ref, React does not re-render your component. This makes it the perfect tool for storing values like interval IDs or preserving state that doesn't visually affect the UI immediately.
+
+<InteractiveLab title="UseRefLab.tsx">
+  <UseRefLab />
+</InteractiveLab>
+
+### Common Scenarios
+
+- **Focusing Elements**: Instantly focusing a text input when a modal opens.
+- **Tracking Timers**: Storing an interval or timeout ID to clear it later.
+- **Previous State**: Keeping track of what a value was in the previous render cycle.

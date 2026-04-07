@@ -2,29 +2,41 @@
   "intro": {
     "order": 0
   },
-  "hooks-useeffect": {
+  "hooks-usestate": {
     "order": 1,
+    "title": "useState"
+  },
+  "hooks-useeffect": {
+    "order": 2,
     "title": "Mastering useEffect"
   },
+  "hooks-useref": {
+    "order": 3,
+    "title": "useRef"
+  },
+  "hooks-usereducer": {
+    "order": 4,
+    "title": "useReducer"
+  },
   "debounce": {
-    "order": 2
+    "order": 5
   },
   "custom-hooks": {
-    "order": 3
+    "order": 6
   },
   "context-api": {
-    "order": 4
+    "order": 7
   },
   "hooks-usememo": {
-    "order": 5,
+    "order": 8,
     "title": "useMemo"
   },
   "hooks-usecallback": {
-    "order": 6,
+    "order": 9,
     "title": "useCallback"
   },
   "react-memo": {
-    "order": 7,
+    "order": 10,
     "title": "React.memo"
   }
 }

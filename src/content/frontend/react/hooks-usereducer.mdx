@@ -1,0 +1,20 @@
+---
+title: "Complex State: useReducer"
+description: "Manage complex component state with an action-based approach."
+---
+
+When your state logic becomes complex, or when multiple state variables depend on each other, `useState` can become difficult to manage and prone to bugs. `useReducer` lets you consolidate all state update logic outside your component inside a single function, called a "reducer".
+
+### The Reducer Pattern
+
+A reducer takes the current state and an action, and returns the new state. This provides predictable state transitions and makes it much easier to unit test your logic.
+
+<InteractiveLab title="UseReducerLab.tsx">
+  <UseReducerLab />
+</InteractiveLab>
+
+### When to use useReducer instead of useState?
+
+1. **Interdependent State**: When the next state depends on the previous state in complex ways.
+2. **Multiple Sub-values**: If your state object contains arrays or deeply nested objects.
+3. **Complex Transitions**: When multiple actions can update the state differently (e.g., in a shopping cart: adding, removing, updating quantity, or applying discounts).

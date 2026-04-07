@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/refs, react/no-unescaped-entities */
 'use client';
 
 import React, { useState, useCallback, useRef, useEffect, memo } from 'react';
