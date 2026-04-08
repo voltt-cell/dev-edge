@@ -17,6 +17,7 @@ import { ContextApiLab } from '@/components/lab/frontend/react/ContextApiLab';
 import { UseMemoLab } from '@/components/lab/frontend/react/UseMemoLab';
 import { UseCallbackLab } from '@/components/lab/frontend/react/UseCallbackLab';
 import { ReactMemoLab } from '@/components/lab/frontend/react/ReactMemoLab';
+import { UseTransitionLab } from '@/components/lab/frontend/react/UseTransitionLab';
 
 const labRegistry: Record<string, React.ReactNode> = {
   'frontend/react/intro': <ReactIntroLab />,
@@ -30,6 +31,7 @@ const labRegistry: Record<string, React.ReactNode> = {
   'frontend/react/hooks-usememo': <UseMemoLab />,
   'frontend/react/hooks-usecallback': <UseCallbackLab />,
   'frontend/react/react-memo': <ReactMemoLab />,
+  'frontend/react/hooks-usetransition': <UseTransitionLab />,
 };
 
 const getIcon = (category: string) => {

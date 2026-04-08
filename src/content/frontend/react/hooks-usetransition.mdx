@@ -1,0 +1,22 @@
+---
+title: "Responsive UI: useTransition"
+description: "Keep your UI responsive by marking heavy updates as non-urgent transitions."
+---
+
+Introduced in React 18, the `useTransition` hook enables **Concurrent Rendering**. It lets you update the state without blocking the UI, giving priority to urgent updates (like typing in an input field) over non-urgent updates (like re-rendering a massive list).
+
+### Urgent vs. Non-Urgent Updates
+
+By default, all state updates in React are considered urgent. If you type in a text box and React immediately tries to filter 20,000 items, the typing will stutter and feel incredibly sluggish.
+
+Wrapping the list-filtering update inside `startTransition` tells React: *"Hey, this is a non-urgent transition. If the user keeps typing, interrupt this heavy work and process their keystrokes first!"*
+
+<InteractiveLab title="UseTransitionLab.tsx">
+  <UseTransitionLab />
+</InteractiveLab>
+
+### When to use useTransition?
+
+- When filtering large lists or data tables based on text input.
+- Switching between complex tabs or routing where the new view takes time to render.
+- Anytime a state update causes the screen to freeze or drop frames.

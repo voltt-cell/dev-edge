@@ -14,6 +14,7 @@ import { ReactMemoLab } from '@/components/lab/frontend/react/ReactMemoLab';
 import { UseStateLab } from '@/components/lab/frontend/react/UseStateLab';
 import { UseRefLab } from '@/components/lab/frontend/react/UseRefLab';
 import { UseReducerLab } from '@/components/lab/frontend/react/UseReducerLab';
+import { UseTransitionLab } from '@/components/lab/frontend/react/UseTransitionLab';
 
 const components = {
   InteractiveLab,
@@ -28,6 +29,7 @@ const components = {
   UseStateLab,
   UseRefLab,
   UseReducerLab,
+  UseTransitionLab,
 };
 
 export default async function LessonPage({

@@ -38,5 +38,9 @@
   "react-memo": {
     "order": 10,
     "title": "React.memo"
+  },
+  "hooks-usetransition": {
+    "order": 11,
+    "title": "useTransition"
   }
 }
