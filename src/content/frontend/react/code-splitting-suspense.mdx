@@ -1,0 +1,30 @@
+---
+title: "Code Splitting & Suspense"
+description: "Optimize your application performance by loading components only when they are needed."
+---
+
+In a standard React application, the entire codebase is bundled into one large JavaScript file. As your app grows, this bundle becomes heavy, leading to slow initial load times—a critical issue for user retention and SEO in corporate environments.
+
+**Code Splitting** is the solution. It allows you to split your app into smaller bundles that can be loaded on demand.
+
+### React.lazy()
+
+The `React.lazy` function lets you render a dynamic import as a regular component. It automatically takes care of loading the bundle containing exactly what you need.
+
+```javascript
+const HeavyComponent = React.lazy(() => import('./HeavyComponent'));
+```
+
+### The Suspense Boundary
+
+Since lazy components are loaded asynchronously, React needs to know what to show while waiting for the code to arrive. The `<Suspense>` component wraps your lazy components and provides a `fallback` UI (like a skeleton screen or a spinner).
+
+<InteractiveLab title="SuspenseLab.tsx">
+  <SuspenseLab />
+</InteractiveLab>
+
+### Professional Patterns
+
+- **Route-based splitting**: Most companies split their code based on routes so you only load the page the user actually navigates to.
+- **Component-based splitting**: For heavy widgets (like charts, editors, or maps) that are hidden behind a button or tab.
+- **Micro-Frontends**: Large scale organizations often use Suspense and Lazy to stitch together independent applications into a single shell.

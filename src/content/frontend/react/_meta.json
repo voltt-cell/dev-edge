@@ -42,5 +42,9 @@
   "hooks-usetransition": {
     "order": 11,
     "title": "useTransition"
+  },
+  "code-splitting-suspense": {
+    "order": 12,
+    "title": "Code Splitting & Suspense"
   }
 }

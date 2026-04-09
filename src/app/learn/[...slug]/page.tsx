@@ -15,6 +15,7 @@ import { UseStateLab } from '@/components/lab/frontend/react/UseStateLab';
 import { UseRefLab } from '@/components/lab/frontend/react/UseRefLab';
 import { UseReducerLab } from '@/components/lab/frontend/react/UseReducerLab';
 import { UseTransitionLab } from '@/components/lab/frontend/react/UseTransitionLab';
+import { SuspenseLab } from '@/components/lab/frontend/react/SuspenseLab';
 
 const components = {
   InteractiveLab,
@@ -30,6 +31,7 @@ const components = {
   UseRefLab,
   UseReducerLab,
   UseTransitionLab,
+  SuspenseLab,
 };
 
 export default async function LessonPage({

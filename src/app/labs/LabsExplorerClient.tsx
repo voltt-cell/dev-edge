@@ -18,6 +18,7 @@ import { UseMemoLab } from '@/components/lab/frontend/react/UseMemoLab';
 import { UseCallbackLab } from '@/components/lab/frontend/react/UseCallbackLab';
 import { ReactMemoLab } from '@/components/lab/frontend/react/ReactMemoLab';
 import { UseTransitionLab } from '@/components/lab/frontend/react/UseTransitionLab';
+import { SuspenseLab } from '@/components/lab/frontend/react/SuspenseLab';
 
 const labRegistry: Record<string, React.ReactNode> = {
   'frontend/react/intro': <ReactIntroLab />,
@@ -32,6 +33,7 @@ const labRegistry: Record<string, React.ReactNode> = {
   'frontend/react/hooks-usecallback': <UseCallbackLab />,
   'frontend/react/react-memo': <ReactMemoLab />,
   'frontend/react/hooks-usetransition': <UseTransitionLab />,
+  'frontend/react/code-splitting-suspense': <SuspenseLab />,
 };
 
 const getIcon = (category: string) => {
