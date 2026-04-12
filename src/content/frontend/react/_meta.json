@@ -46,5 +46,9 @@
   "code-splitting-suspense": {
     "order": 12,
     "title": "Code Splitting & Suspense"
+  },
+  "enterprise-imports": {
+    "order": 13,
+    "title": "Enterprise Imports"
   }
 }

@@ -1,0 +1,87 @@
+---
+title: Enterprise Imports & Architecture
+description: Learn best practices for structuring files, managing imports/exports, and maintaining scale in enterprise React apps.
+order: 13
+---
+
+When scaling React applications for enterprise environments or company projects, managing how components are exported, imported, and structured becomes critical. Proper architecture prevents "spaghetti code" and "import hell".
+
+## Named vs Default Exports
+
+While React allows both, enterprise projects strongly lean toward **Named Exports** over default exports.
+
+### Why Named Exports?
+1. **Refactoring**: IDEs can perfectly trace and rename named exports across the codebase.
+2. **Auto-completion**: Your editor can easily auto-import `import { Button } } from './Button'` but struggles with arbitrary default names.
+3. **Reliability**: It forces the importer to use the exact specified name, preventing naming inconsistencies across the codebase (e.g., `import Btn from './Button'` vs `import ButtonComponent from './Button'`).
+
+```tsx
+// ❌ Avoid Default Exports in enterprise components
+export default function UserProfile() {
+  return <div>Profile</div>;
+}
+
+// ✅ Use Named Exports
+export function UserProfile() {
+  return <div>Profile</div>;
+}
+```
+
+*Note: Default exports are usually reserved for specific frameworks (like Next.js pages or React `React.lazy` which expects a default export). For details on lazy loading, check out our topic on [Code Splitting & Suspense](/frontend/react/code-splitting-suspense).*
+
+## Barrel Files (Index.ts)
+
+To organize multiple components within a feature or ui-kit folder, companies rely on **Barrel Files** (`index.ts`). A barrel file re-exports multiple modules so consumers can import them from a single location.
+
+Instead of this messy structure:
+```tsx
+import { Button } from '../../components/ui/Button';
+import { Card } from '../../components/ui/Card';
+import { Input } from '../../components/ui/Input';
+```
+
+A barrel file (`components/ui/index.ts`) lets you do:
+
+```tsx
+// components/ui/index.ts
+export * from './Button';
+export * from './Card';
+export * from './Input';
+
+// App.tsx
+// ✅ Clean, single import statement
+import { Button, Card, Input } from '../../components/ui';
+```
+
+## Absolute Imports vs Relative Paths
+
+Deeply nested file structures lead to painful relative paths like `../../../utils/formatters`. Enterprise projects configure **Absolute Imports** (usually in `tsconfig.json` or Webpack/Vite config).
+
+```tsx
+// ❌ Hard to read, fragile during refactoring
+import { useAuth } from '../../../hooks/useAuth';
+
+// ✅ Clean, absolute path mapping
+import { useAuth } from '@/hooks/useAuth';
+```
+
+To learn more about abstracting logic, check out [Custom Hooks](/frontend/react/custom-hooks) where absolute imports make hook consumption seamless across the app.
+
+## Project Structure (Feature-Based)
+
+Instead of grouping files by type (e.g., all hooks in a `hooks/` folder, all components in a `components/` folder), large projects group files by **Feature** or Domain.
+
+```text
+src/
+ ├── features/
+ │   ├── authentication/
+ │   │   ├── components/      # Auth specific components
+ │   │   ├── hooks/           # useLogin, useAuth
+ │   │   ├── api/             # API calls
+ │   │   └── index.ts         # Public API for this feature!
+ │   └── shopping-cart/
+ ├── components/              # Shared, generic UI components (Buttons, Modals)
+ └── utils/                   # Truly generic utils
+```
+
+This ensures that everything related to 'authentication' is co-located, and the feature only exposes what's in its `index.ts` file to the rest of the application.
