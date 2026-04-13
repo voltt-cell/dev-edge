@@ -1,0 +1,67 @@
+---
+title: React Portals
+description: Learn how to render children into a DOM node that exists outside the DOM hierarchy of the parent component using React Portals.
+order: 14
+---
+
+In React, a component's render output is typically placed natively inside its parent component's DOM node. However, there are times when you need to break free from this hierarchy.
+
+Enter **React Portals**. Portals provide a first-class way to render children into a DOM node that exists outside the DOM hierarchy of the parent component.
+
+## When to use Portals
+
+The most common use cases for Portals include:
+1. **Modals and Dialogs:** To ensure modals sit on top of everything without worrying about `z-index` conflicts or `overflow: hidden` on parent elements.
+2. **Tooltips and Popovers:** So they aren't clipped by scrollable containers.
+3. **Dropdown Menus:** Ensuring menus overlay other content without hacking CSS.
+
+## How to create a Portal
+
+React provides the `createPortal(child, container)` API from `react-dom`.
+
+- **`child`**: Any renderable React child (element, string, fragment).
+- **`container`**: A real DOM element (like `document.body` or `document.getElementById('modal-root')`).
+
+### Basic Implementation
+
+```tsx
+import { createPortal } from 'react-dom';
+
+function Modal({ children }) {
+  // Renders the children directly into document.body!
+  return createPortal(
+    <div className="modal-overlay">
+      <div className="modal-content">
+        {children}
+      </div>
+    </div>,
+    document.body
+  );
+}
+```
+
+## Interactive Lab
+
+In this lab, we have a button rendered deep inside the component tree. When you click it, the Modal is opened using a Portal, mounting directly to `document.body`. Notice how it perfectly overlays the entire screen regardless of nested CSS!
+
+<InteractiveLab title="React Portals Example">
+  <ReactPortalsLab />
+</InteractiveLab>
+
+## Event Bubbling in Portals
+
+An interesting and powerful feature of Portals is that, although they are visually rendered elsewhere in the DOM, **they behave like normal React children within the React tree**. 
+
+This means that React events (like `onClick`) triggered inside a Portal will still bubble up to ancestors in the *React Tree*, even if those ancestors aren't ancestors in the *DOM Tree*.
+
+```tsx
+// If you click inside the child modal, 
+// this parent's onClick will still fire!
+<div onClick={() => console.log('Clicked!')}>
+  <Modal>
+    <button>Click me</button>
+  </Modal>
+</div>
+```
+
+Explore our lab and experiment with how portals make managing overlays a breeze!

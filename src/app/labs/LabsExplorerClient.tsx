@@ -19,6 +19,7 @@ import { UseCallbackLab } from '@/components/lab/frontend/react/UseCallbackLab';
 import { ReactMemoLab } from '@/components/lab/frontend/react/ReactMemoLab';
 import { UseTransitionLab } from '@/components/lab/frontend/react/UseTransitionLab';
 import { SuspenseLab } from '@/components/lab/frontend/react/SuspenseLab';
+import { ReactPortalsLab } from '@/components/lab/frontend/react/ReactPortalsLab';
 
 const labRegistry: Record<string, React.ReactNode> = {
   'frontend/react/intro': <ReactIntroLab />,
@@ -34,6 +35,7 @@ const labRegistry: Record<string, React.ReactNode> = {
   'frontend/react/react-memo': <ReactMemoLab />,
   'frontend/react/hooks-usetransition': <UseTransitionLab />,
   'frontend/react/code-splitting-suspense': <SuspenseLab />,
+  'frontend/react/portals': <ReactPortalsLab />,
 };
 
 const getIcon = (category: string) => {

@@ -50,5 +50,9 @@
   "enterprise-imports": {
     "order": 13,
     "title": "Enterprise Imports"
+  },
+  "portals": {
+    "order": 14,
+    "title": "React Portals"
   }
 }
