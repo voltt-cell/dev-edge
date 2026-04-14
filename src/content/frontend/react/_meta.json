@@ -54,5 +54,9 @@
   "portals": {
     "order": 14,
     "title": "React Portals"
+  },
+  "advanced-refs": {
+    "order": 15,
+    "title": "Advanced Refs"
   }
 }

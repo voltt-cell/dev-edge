@@ -17,6 +17,7 @@ import { UseReducerLab } from '@/components/lab/frontend/react/UseReducerLab';
 import { UseTransitionLab } from '@/components/lab/frontend/react/UseTransitionLab';
 import { SuspenseLab } from '@/components/lab/frontend/react/SuspenseLab';
 import { ReactPortalsLab } from '@/components/lab/frontend/react/ReactPortalsLab';
+import { AdvancedRefsLab } from '@/components/lab/frontend/react/AdvancedRefsLab';
 
 const components = {
   InteractiveLab,
@@ -34,6 +35,7 @@ const components = {
   UseTransitionLab,
   SuspenseLab,
   ReactPortalsLab,
+  AdvancedRefsLab,
 };
 
 export default async function LessonPage({

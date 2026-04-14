@@ -1,0 +1,35 @@
+---
+title: "Advanced Refs"
+description: "Mastering component communication with forwardRef and useImperativeHandle."
+---
+
+While React favors declarative, top-down data flow using props and state, there are times when a parent component needs to imperatively trigger an action in a child component. This is typical for managing focus, triggering animations, or interacting with third-party DOM libraries.
+
+To achieve this cleanly, React provides `forwardRef` and `useImperativeHandle`.
+
+### The Problem
+
+By default, you cannot pass a `ref` to a functional component. React will actually warn you if you try to do this. To allow a parent to pass a `ref` down to a child's DOM node (like an `<input>`), you must wrap the child component in `forwardRef`.
+
+But what if you don't just want to expose a raw DOM element? What if you want to expose a specific set of custom methods (like `play()`, `pause()`, or `shake()`)?
+
+### useImperativeHandle
+
+The `useImperativeHandle` hook customizes the instance value that is exposed to parent components when using `ref`. It allows you to strictly define the "API" your component exposes, hiding implementation details and raw DOM nodes from the parent.
+
+<InteractiveLab title="AdvancedRefsLab.tsx">
+  <AdvancedRefsLab />
+</InteractiveLab>
+
+### How it works in the Lab
+
+1. **Child Component (`SecureTerminal`)**: Wrapped in `forwardRef`. It uses `useImperativeHandle` to expose exactly three methods: `focus()`, `shake()`, `showError()`, and `reset()`.
+2. **Parent Component (`AdvancedRefsLab`)**: Creates a ref and attaches it to `<SecureTerminal ref={terminalRef} />`. It can now call `terminalRef.current.shake()` without knowing *how* the child implements the shake animation.
+
+### When to use this pattern?
+- **Controlling Media Players**: Exposing `play()`, `pause()`, `seek()` from a video UI component.
+- **Form Libraries**: Exposing a `validate()` or `focusError()` method on custom form fields.
+- **Complex Animations**: Triggering an internal timeline or animation state independently from declarative re-renders.
+
+> [!WARNING]
+> Use imperative code sparingly. Most UI logic should be expressed declaratively with state and props. Overusing `useImperativeHandle` can make your codebase brittle and harder to track.
