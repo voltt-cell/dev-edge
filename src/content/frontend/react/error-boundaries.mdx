@@ -1,0 +1,94 @@
+---
+title: "Error Boundaries"
+description: "Gracefully handle JavaScript errors in your component tree and prevent the entire app from crashing."
+order: 16
+---
+
+In production applications, unhandled JavaScript errors inside components used to completely crash React and corrupt its internal state, leaving users staring at a permanent blank white screen. 
+
+React 16 introduced a brilliant safety net to fix this: **Error Boundaries**. 
+
+### What is an Error Boundary?
+An Error Boundary is a React component that catches JavaScript errors anywhere in its child component tree, logs those errors, and **displays a fallback UI** instead of crashing the whole screen.
+
+Think of them like a `catch {}` block, but exclusively for React rendering!
+
+---
+
+## Interactive Lab: Component Crash Test
+
+In this lab, we have two components:
+1. **Alex's Profile** is safely wrapped inside an `<ErrorBoundary>`.
+2. **Sarah's Profile** is an unprotected normal component.
+
+Click the **"Throw Error"** button on Alex's profile. You'll see the Error Boundary catch it and swap the UI gracefully. If you throw an error on Sarah's profile, it simulates an uncaught error!
+
+*(Note: If you're running this locally, close the Next.js Dev Error Overlay if it pops up to see the Boundary underneath)*
+
+<InteractiveLab title="react/patterns/error-boundaries">
+  <ErrorBoundariesLab />
+</InteractiveLab>
+
+---
+
+## How to build an Error Boundary
+
+There is one major caveat: As of React 18, **Error Boundaries MUST be Class Components**. There is no Hook equivalent (`useErrorBoundary` does not exist natively). 
+
+Here is the standard boilerplate every React team uses:
+
+```tsx
+import React, { Component } from 'react';
+
+class ErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  // 1. Update state so the next render shows the fallback UI
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  // 2. Log the error to an error reporting service (Sentry, Datadog)
+  componentDidCatch(error, errorInfo) {
+    console.error("Caught by ErrorBoundary:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      // You can render any custom fallback UI
+      return <h1>Something went horribly wrong.</h1>;
+    }
+
+    return this.props.children; 
+  }
+}
+```
+
+### Using the Boundary
+Once you've built the Error Boundary component, you use it just like a regular wrapper component. A common pattern is to wrap it around major sections of your app, like Routes, Data Tables, or huge features.
+
+```tsx
+<ErrorBoundary>
+  <Sidebar />
+</ErrorBoundary>
+
+<ErrorBoundary>
+  <Dashboard />
+</ErrorBoundary>
+```
+
+---
+
+### What do Error Boundaries NOT catch?
+It's important to remember that Error Boundaries only catch errors during **rendering, lifecycle methods, and constructors** of the whole tree below them. 
+
+They do **NOT** catch errors in:
+- **Event Handlers** (like `onClick`)
+- Asynchronous code (e.g. `setTimeout` or `fetch` callbacks)
+- Server Side Rendering
+- Errors thrown in the Error Boundary itself (rather than its children)
+
+For Event Handlers, standard `try/catch` blocks are still the standard approach!

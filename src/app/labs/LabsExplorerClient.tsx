@@ -20,6 +20,7 @@ import { ReactMemoLab } from '@/components/lab/frontend/react/ReactMemoLab';
 import { UseTransitionLab } from '@/components/lab/frontend/react/UseTransitionLab';
 import { SuspenseLab } from '@/components/lab/frontend/react/SuspenseLab';
 import { ReactPortalsLab } from '@/components/lab/frontend/react/ReactPortalsLab';
+import { ErrorBoundariesLab } from '@/components/lab/frontend/react/ErrorBoundariesLab';
 
 const labRegistry: Record<string, React.ReactNode> = {
   'frontend/react/intro': <ReactIntroLab />,
@@ -36,6 +37,7 @@ const labRegistry: Record<string, React.ReactNode> = {
   'frontend/react/hooks-usetransition': <UseTransitionLab />,
   'frontend/react/code-splitting-suspense': <SuspenseLab />,
   'frontend/react/portals': <ReactPortalsLab />,
+  'frontend/react/error-boundaries': <ErrorBoundariesLab />,
 };
 
 const getIcon = (category: string) => {
