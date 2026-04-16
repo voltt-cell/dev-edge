@@ -21,6 +21,7 @@ import { UseTransitionLab } from '@/components/lab/frontend/react/UseTransitionL
 import { SuspenseLab } from '@/components/lab/frontend/react/SuspenseLab';
 import { ReactPortalsLab } from '@/components/lab/frontend/react/ReactPortalsLab';
 import { ErrorBoundariesLab } from '@/components/lab/frontend/react/ErrorBoundariesLab';
+import { CompoundComponentsLab } from '@/components/lab/frontend/react/CompoundComponentsLab';
 
 const labRegistry: Record<string, React.ReactNode> = {
   'frontend/react/intro': <ReactIntroLab />,
@@ -38,6 +39,7 @@ const labRegistry: Record<string, React.ReactNode> = {
   'frontend/react/code-splitting-suspense': <SuspenseLab />,
   'frontend/react/portals': <ReactPortalsLab />,
   'frontend/react/error-boundaries': <ErrorBoundariesLab />,
+  'frontend/react/compound-components': <CompoundComponentsLab />,
 };
 
 const getIcon = (category: string) => {

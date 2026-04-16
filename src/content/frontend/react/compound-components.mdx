@@ -1,0 +1,104 @@
+---
+title: "Compound Components"
+description: "Master the industry-standard design pattern used by Tailwind, Radix UI, and Headless UI to build highly flexible, expressive React components."
+order: 17
+---
+
+If you've ever used a professional component library, you've likely written code that looks like this:
+
+```tsx
+<Select>
+  <Select.Trigger />
+  <Select.Menu>
+    <Select.Item value="apple">Apple</Select.Item>
+    <Select.Item value="banana">Banana</Select.Item>
+  </Select.Menu>
+</Select>
+```
+
+This is the **Compound Components Pattern**. It's an architecture where multiple components work together to form a cohesive UI, sharing state invisibly behind the scenes.
+
+### Why not just use Props?
+Imagine trying to build an Accordion by passing a giant array of configuration objects as props (Prop-Drilling):
+
+```tsx
+// ❌ The "Prop Drilling" (Configuration) Pattern
+<Accordion 
+  items={[
+    { title: "React", content: "Is Great" },
+    { title: "Vue", content: "Also Great" }
+  ]}
+  renderHeaderIcon={(isOpen) => <MyCustomIcon open={isOpen} />}
+  contentClassName="p-4 bg-gray-100"
+/>
+```
+
+As your component requirements grow, your props become an absolute nightmare to maintain. The component becomes a "black box" that's incredibly difficult to customize.
+
+---
+
+## Interactive Lab: Building an Accordion
+
+The Compound Components pattern solves this by **inverting control** back to the consumer. The internal state (like `activeItem`) is managed by the Parent via React Context, and explicitly passed down to its semantic Children.
+
+In this lab, interact with the custom Accordion below, then click "View API Code" to see how effortlessly expressive it is to use!
+
+<InteractiveLab title="react/patterns/compound-components">
+  <CompoundComponentsLab />
+</InteractiveLab>
+
+---
+
+## How to Build Compound Components
+
+Building your own compound components requires **React Context** to share state deeply without explicitly passing props down every level.
+
+Here are the 4 steps to building a Compound Component:
+
+### 1. Create the Context
+Create a Context to hold the shared state (e.g., what item is currently open).
+```tsx
+const AccordionContext = createContext();
+```
+
+### 2. Build the Parent Wrapper
+The parent holds the State, and wraps its children in the Context Provider.
+```tsx
+function Accordion({ children }) {
+  const [activeItem, setActiveItem] = useState(null);
+
+  return (
+    <AccordionContext.Provider value={{ activeItem, setActiveItem }}>
+      <div className="accordion-wrapper">{children}</div>
+    </AccordionContext.Provider>
+  );
+}
+```
+
+### 3. Build the Child Components
+Child components consume the context internally. The user of your component doesn't need to know *how* `AccordionHeader` knows it's clicked, it just knows it belongs inside an `Accordion`.
+
+```tsx
+function AccordionHeader({ children, value }) {
+  const { activeItem, setActiveItem } = useContext(AccordionContext);
+  const isOpen = activeItem === value;
+
+  return (
+    <button onClick={() => setActiveItem(value)}>
+      {children} {isOpen ? '[-]' : '[+]'}
+    </button>
+  );
+}
+```
+
+### 4. (Optional) Assign Sub-components
+For a cleaner developer experience, attach the child components as properties to the parent component.
+```tsx
+Accordion.Header = AccordionHeader;
+Accordion.Panel = AccordionPanel;
+```
+
+---
+
+## When to use them?
+Use Compound Components when you are building complex UI elements (like Dialogs, Selects, Menus, Accordions, or Data Tables) where the consumer needs **maximum flexibility** over the layout, structural nesting, and styling of the internal pieces.

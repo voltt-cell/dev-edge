@@ -19,6 +19,7 @@ import { SuspenseLab } from '@/components/lab/frontend/react/SuspenseLab';
 import { ReactPortalsLab } from '@/components/lab/frontend/react/ReactPortalsLab';
 import { AdvancedRefsLab } from '@/components/lab/frontend/react/AdvancedRefsLab';
 import { ErrorBoundariesLab } from '@/components/lab/frontend/react/ErrorBoundariesLab';
+import { CompoundComponentsLab } from '@/components/lab/frontend/react/CompoundComponentsLab';
 
 const components = {
   InteractiveLab,
@@ -38,6 +39,7 @@ const components = {
   ReactPortalsLab,
   AdvancedRefsLab,
   ErrorBoundariesLab,
+  CompoundComponentsLab,
 };
 
 export default async function LessonPage({

@@ -62,5 +62,9 @@
   "error-boundaries": {
     "order": 16,
     "title": "Error Boundaries"
+  },
+  "compound-components": {
+    "order": 17,
+    "title": "Compound Components"
   }
 }
