@@ -43,28 +43,32 @@
     "order": 11,
     "title": "useTransition"
   },
-  "code-splitting-suspense": {
+  "optimistic-updates": {
     "order": 12,
+    "title": "Optimistic Updates"
+  },
+  "code-splitting-suspense": {
+    "order": 13,
     "title": "Code Splitting & Suspense"
   },
   "enterprise-imports": {
-    "order": 13,
+    "order": 14,
     "title": "Enterprise Imports"
   },
   "portals": {
-    "order": 14,
+    "order": 15,
     "title": "React Portals"
   },
   "advanced-refs": {
-    "order": 15,
+    "order": 16,
     "title": "Advanced Refs"
   },
   "error-boundaries": {
-    "order": 16,
+    "order": 17,
     "title": "Error Boundaries"
   },
   "compound-components": {
-    "order": 17,
+    "order": 18,
     "title": "Compound Components"
   }
 }

@@ -22,6 +22,8 @@ import { SuspenseLab } from '@/components/lab/frontend/react/SuspenseLab';
 import { ReactPortalsLab } from '@/components/lab/frontend/react/ReactPortalsLab';
 import { ErrorBoundariesLab } from '@/components/lab/frontend/react/ErrorBoundariesLab';
 import { CompoundComponentsLab } from '@/components/lab/frontend/react/CompoundComponentsLab';
+import { OptimisticUpdatesLab } from '@/components/lab/frontend/react/OptimisticUpdatesLab';
+
 
 const labRegistry: Record<string, React.ReactNode> = {
   'frontend/react/intro': <ReactIntroLab />,
@@ -40,6 +42,8 @@ const labRegistry: Record<string, React.ReactNode> = {
   'frontend/react/portals': <ReactPortalsLab />,
   'frontend/react/error-boundaries': <ErrorBoundariesLab />,
   'frontend/react/compound-components': <CompoundComponentsLab />,
+  'frontend/react/optimistic-updates': <OptimisticUpdatesLab />,
+
 };
 
 const getIcon = (category: string) => {
