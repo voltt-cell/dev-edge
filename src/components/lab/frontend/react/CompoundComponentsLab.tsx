@@ -15,7 +15,7 @@ const AccordionContext = createContext<AccordionContextType | undefined>(undefin
 // 2. Parent Component
 function Accordion({ children, className = '' }: { children: ReactNode, className?: string }) {
   const [activeItem, setActiveItem] = useState<string | null>(null);
-  
+
   const toggleItem = (value: string) => {
     setActiveItem(prev => prev === value ? null : value);
   };
@@ -64,8 +64,8 @@ function AccordionHeader({ children }: { children: ReactNode }) {
       className="flex items-center justify-between px-5 py-4 w-full text-left text-slate-200 font-medium hover:bg-slate-800/50 transition-colors focus:outline-none"
     >
       <span>{children}</span>
-      <ChevronDown 
-        className={`w-4 h-4 text-emerald-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} 
+      <ChevronDown
+        className={`w-4 h-4 text-emerald-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
       />
     </button>
   );
@@ -106,13 +106,13 @@ export function CompoundComponentsLab() {
 
   return (
     <div className="flex flex-col gap-6 w-full text-slate-200 max-w-2xl mx-auto">
-      
+
       <div className="bg-emerald-500/10 border border-emerald-500/20 p-6 rounded-2xl">
         <div className="flex justify-between items-center mb-6 border-b border-emerald-500/20 pb-4">
           <h3 className="text-xl font-bold text-emerald-400 flex items-center gap-2">
             <CheckCircle className="w-5 h-5" /> Highly Expressive Accordion
           </h3>
-          <button 
+          <button
             onClick={() => setShowCode(!showCode)}
             className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 text-xs font-semibold rounded-lg transition-colors border border-emerald-500/30"
           >
@@ -147,7 +147,7 @@ export function CompoundComponentsLab() {
             <p className="text-sm text-emerald-100/70 mb-6">
               Interact with the accordion below. Notice how the parent <code>&lt;Accordion&gt;</code> manages the state of which item is open, and seamlessly shares it with the <code>&lt;Accordion.Header&gt;</code> and <code>&lt;Accordion.Panel&gt;</code> using React Context!
             </p>
-            
+
             <Accordion className="shadow-lg">
               <Accordion.Item value="react">
                 <Accordion.Header>Why use Compound Components?</Accordion.Header>
@@ -155,21 +155,24 @@ export function CompoundComponentsLab() {
                   <p>Compound components allow you to build expressive, declarative APIs. Instead of passing massive configuration objects as props (like <code>{`items={[{title: '...', content: '...'}]}`}</code>), you let developers compose the UI exactly how they want using explicit child components.</p>
                 </Accordion.Panel>
               </Accordion.Item>
-              
+
               <Accordion.Item value="structure">
                 <Accordion.Header>How does State sharing work?</Accordion.Header>
                 <Accordion.Panel>
                   <p>The parent <code>&lt;Accordion&gt;</code> component creates a React Context. It holds the <code>activeItem</code> state. The child components (Header, Panel) consume this context invisibly behind the scenes. This is known as "Implicit State Sharing".</p>
                 </Accordion.Panel>
               </Accordion.Item>
-              
+
               <Accordion.Item value="flexibility">
                 <Accordion.Header>Total Markup Flexibility</Accordion.Header>
                 <Accordion.Panel>
                   <div className="flex items-center gap-3 bg-slate-950/50 p-3 rounded-lg border border-slate-700/50 text-emerald-300">
                     <span className="text-xl">🎨</span>
-                    Because the consumer writes out the JSX elements, they can easily wrap titles in `&lt;h3&gt;` tags, add custom icons, or inject arbitrary layouts *without* the library author needing to add support for it via messy props like `renderHeaderIcon={() => ...}`!
-                  </div>
+                    <div>
+                      {
+                        "Because the consumer writes out the JSX elements, they can easily wrap titles in <h3> tags, add custom icons, or inject arbitrary layouts without the library author needing to add support for it via messy props like renderHeaderIcon={() => ...}!"
+                      }
+                    </div>                  </div>
                 </Accordion.Panel>
               </Accordion.Item>
             </Accordion>
