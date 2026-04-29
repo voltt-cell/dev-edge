@@ -70,5 +70,9 @@
   "compound-components": {
     "order": 18,
     "title": "Compound Components"
+  },
+  "hooks-usedeferredvalue": {
+    "order": 19,
+    "title": "useDeferredValue"
   }
 }

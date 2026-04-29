@@ -1,0 +1,21 @@
+---
+title: "useDeferredValue"
+description: "De-prioritize updating certain parts of the UI so your app stays responsive."
+---
+
+Introduced in React 18 alongside `useTransition`, the `useDeferredValue` hook is another powerful tool for **Concurrent Rendering**. While `useTransition` wraps a state *update* (the function that changes state), `useDeferredValue` wraps a *value* that you receive from props or state.
+
+### How it works
+
+When you pass a value to `useDeferredValue(value)`, React will return a deferred version of that value. During urgent updates (like a user typing in an input field), React will keep returning the *old* value for the deferred variable, allowing the UI to render immediately without waiting for heavy components to re-render. Once the urgent render is complete, React will schedule a background render with the *new* value.
+
+<InteractiveLab title="UseDeferredValueLab.tsx">
+  <UseDeferredValueLab />
+</InteractiveLab>
+
+### useTransition vs useDeferredValue
+
+*   **`useTransition`**: Use this when you have control over the state update function (e.g., you can wrap `setSearchQuery` in `startTransition`).
+*   **`useDeferredValue`**: Use this when you receive a value from above (like a prop) and don't have access to the state updater, but you know rendering based on this value is slow.
+
+In short, they achieve the same goal (keeping the UI responsive), but are used in different parts of your component tree.
