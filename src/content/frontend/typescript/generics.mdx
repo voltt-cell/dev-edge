@@ -1,0 +1,141 @@
+---
+title: "Generics"
+description: "Write functions and data structures that work with any type while still preserving full type safety — the secret weapon of TypeScript power users."
+order: 2
+---
+
+Generics are one of the most powerful features in TypeScript. They let you write **reusable, type-safe code** that works with a variety of types, without sacrificing the safety that TypeScript provides.
+
+Think of a generic as a **type variable** — a placeholder for a type that gets filled in later.
+
+---
+
+## The Problem Generics Solve
+
+Imagine you want a function that returns the first item of any array:
+
+```ts
+// Without generics — you lose type safety
+function first(arr: any[]): any {
+  return arr[0];
+}
+
+const name = first(["Alice", "Bob"]); // type: any 😱
+name.toUpperCase(); // TypeScript can't help you here
+```
+
+The return type is `any` — we've lost all type information. Generics fix this.
+
+---
+
+## Introducing Generic Functions
+
+```ts
+// With a generic type parameter <T>
+function first<T>(arr: T[]): T {
+  return arr[0];
+}
+
+// TypeScript infers T as 'string'
+const name = first(["Alice", "Bob"]);   // type: string ✅
+const score = first([95, 87, 100]);     // type: number ✅
+const flag = first([true, false]);      // type: boolean ✅
+
+name.toUpperCase(); // ✅ TypeScript knows this is safe
+score.toFixed(2);   // ✅ TypeScript knows this is safe
+```
+
+The `<T>` is the type parameter — it acts as a variable at the type level. When you call `first(["Alice", "Bob"])`, TypeScript sees an array of strings and sets `T = string` automatically.
+
+---
+
+## Generic Interfaces & Types
+
+Generics work on interfaces and types too. This is how built-in types like `Array<T>`, `Promise<T>`, and `Map<K, V>` are built.
+
+```ts
+// A generic API response wrapper
+interface ApiResponse<T> {
+  data: T;
+  status: number;
+  message: string;
+}
+
+// Reuse it for any data shape
+type UserResponse = ApiResponse<User>;
+type ProductListResponse = ApiResponse<Product[]>;
+
+const response: UserResponse = {
+  data: { id: 1, name: "Ada", email: "ada@example.com", role: "admin" },
+  status: 200,
+  message: "OK",
+};
+```
+
+---
+
+## Constraining Generics with `extends`
+
+Sometimes you need to ensure the generic type has certain properties. You can use `extends` to add constraints.
+
+```ts
+// T must have at least a 'name' property that is a string
+function printName<T extends { name: string }>(item: T): void {
+  console.log(item.name.toUpperCase());
+}
+
+printName({ name: "TypeScript" });           // ✅
+printName({ name: "Ada", role: "admin" });   // ✅ extra properties are fine
+printName({ id: 1 });                        // ❌ Error: no 'name' property
+```
+
+---
+
+## Multiple Type Parameters
+
+You can have as many type parameters as you need. The built-in `Map<K, V>` uses two.
+
+```ts
+// A generic key-value pair
+function makePair<K, V>(key: K, value: V): [K, V] {
+  return [key, value];
+}
+
+const pair1 = makePair("userId", 42);         // type: [string, number]
+const pair2 = makePair(true, "active");        // type: [boolean, string]
+```
+
+---
+
+## Real-World Example: Generic `useLocalStorage` Hook
+
+Here's how generics power real React hooks:
+
+```ts
+function useLocalStorage<T>(key: string, initialValue: T) {
+  const [storedValue, setStoredValue] = useState<T>(() => {
+    const item = localStorage.getItem(key);
+    return item ? (JSON.parse(item) as T) : initialValue;
+  });
+
+  const setValue = (value: T) => {
+    setStoredValue(value);
+    localStorage.setItem(key, JSON.stringify(value));
+  };
+
+  return [storedValue, setValue] as const;
+}
+
+// Usage: TypeScript knows the type is 'User | null'
+const [user, setUser] = useLocalStorage<User | null>("currentUser", null);
+```
+
+---
+
+## Key Takeaways
+
+- **`<T>`** is a type variable — a placeholder filled in at call time
+- Use generics to avoid `any` while keeping code reusable
+- **`extends`** constrains what types are allowed
+- Multiple parameters (e.g. `<K, V>`) are perfectly valid
+- The TypeScript standard library (`Array`, `Promise`, `Map`) is built entirely on generics

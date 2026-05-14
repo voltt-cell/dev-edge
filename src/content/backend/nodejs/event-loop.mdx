@@ -1,0 +1,141 @@
+---
+title: "The Event Loop"
+description: "Deeply understand Node.js's single-threaded event loop, the call stack, the callback queue, and why non-blocking I/O is the key to Node's performance."
+order: 1
+---
+
+The Event Loop is the heart of Node.js. It's the mechanism that lets Node handle thousands of concurrent operations on a **single thread** — without blocking. Understanding it is essential for writing performant Node.js code and for avoiding common pitfalls like accidentally blocking the event loop.
+
+---
+
+## How JavaScript Executes Code
+
+JavaScript (and Node.js) is **single-threaded** — it can only do one thing at a time. All your code runs on the **call stack**. When a function is called, it's pushed onto the stack. When it returns, it's popped off.
+
+```
+Call Stack:
+┌─────────────┐
+│  readFile() │ ← pushed when called
+│  main()     │ ← pushed first
+└─────────────┘
+```
+
+The problem: if `readFile()` waited synchronously for the disk (slow I/O), the entire stack would be frozen. Nothing else could run.
+
+---
+
+## Non-Blocking I/O: The Key Insight
+
+Node.js offloads slow I/O operations (file reads, network requests, timers) to **libuv** — a C library that uses the OS's async APIs. When the work is done, a **callback** is placed in the queue.
+
+```
+┌────────────────────────────────────┐
+│           Your Code                │
+│         (Call Stack)               │
+└──────────────┬─────────────────────┘
+               │ offloads I/O
+┌──────────────▼─────────────────────┐
+│   Node.js / libuv (C layer)        │
+│   File system, Network, Timers     │
+└──────────────┬─────────────────────┘
+               │ callback ready
+┌──────────────▼─────────────────────┐
+│         Callback Queue             │
+│  [cb1, cb2, cb3, ...]              │
+└──────────────┬─────────────────────┘
+               │ when stack is empty
+┌──────────────▼─────────────────────┐
+│           Event Loop               │
+│  picks next callback → call stack  │
+└────────────────────────────────────┘
+```
+
+---
+
+## Seeing It In Action
+
+```js
+console.log('1: Start');
+
+// setTimeout is non-blocking — callback goes to the queue
+setTimeout(() => {
+  console.log('3: Timer callback');
+}, 0); // even 0ms delay goes through the event loop
+
+console.log('2: End');
+
+// Output:
+// 1: Start
+// 2: End
+// 3: Timer callback  ← runs AFTER the call stack is empty
+```
+
+---
+
+## The Phases of the Event Loop
+
+The event loop runs in phases. Each phase has a specific queue of callbacks it processes:
+
+```
+   ┌──────────────────────────┐
+┌→ │   timers                 │ setTimeout, setInterval callbacks
+│  └──────────┬───────────────┘
+│  ┌──────────▼───────────────┐
+│  │   pending callbacks      │ I/O errors from previous tick
+│  └──────────┬───────────────┘
+│  ┌──────────▼───────────────┐
+│  │   poll                   │ retrieve new I/O events (fs, net)
+│  └──────────┬───────────────┘
+│  ┌──────────▼───────────────┐
+│  │   check                  │ setImmediate() callbacks
+│  └──────────┬───────────────┘
+│  ┌──────────▼───────────────┐
+└─ │   close callbacks        │ socket.on('close', ...)
+   └──────────────────────────┘
+```
+
+**Microtasks** (`Promise.then`, `queueMicrotask`) run between *every* phase — they have the highest priority.
+
+---
+
+## Interactive Lab: Visualize the Event Loop
+
+<InteractiveLab title="backend/nodejs/event-loop">
+  <EventLoopLab />
+</InteractiveLab>
+
+---
+
+## Blocking the Event Loop — The #1 Mistake
+
+If you run CPU-intensive code synchronously, you block the *entire* event loop. No other requests can be processed until it finishes.
+
+```js
+// ❌ NEVER do this in a request handler — blocks all users
+app.get('/hash', (req, res) => {
+  // CPU-intensive — blocks for hundreds of ms
+  const hash = crypto.scryptSync(req.body.password, 'salt', 64);
+  res.send(hash.toString('hex'));
+});
+
+// ✅ Use async version — hands control back to event loop
+app.get('/hash', async (req, res) => {
+  const hash = await new Promise((resolve, reject) => {
+    crypto.scrypt(req.body.password, 'salt', 64, (err, key) => {
+      if (err) reject(err);
+      else resolve(key);
+    });
+  });
+  res.send(hash.toString('hex'));
+});
+```
+
+---
+
+## Key Takeaways
+
+- The call stack runs your code synchronously — one frame at a time
+- Slow I/O is **offloaded** to libuv; callbacks fire when done
+- The event loop picks callbacks from the queue when the stack is **empty**
+- **Microtasks** (Promises) run before the next event loop phase
+- Never run CPU-intensive synchronous code on the main thread

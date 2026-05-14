@@ -1,0 +1,129 @@
+---
+title: "Docker Volumes"
+description: "Persist data across container restarts and share files between your host machine and containers using Docker volumes and bind mounts."
+order: 1
+---
+
+Containers are **ephemeral by default** — when a container stops or is removed, all data written inside it is lost. Docker **volumes** solve this by storing data outside the container's filesystem.
+
+---
+
+## The Problem
+
+```bash
+# Start a Postgres container
+docker run -d --name mydb postgres:16
+
+# Write some data... stop the container...
+docker stop mydb && docker rm mydb
+
+# Start it again — ALL DATA IS GONE
+docker run -d --name mydb postgres:16
+```
+
+Without volumes, stateful apps (databases, file uploads, logs) lose all data on restart.
+
+---
+
+## Named Volumes — The Standard Approach
+
+Named volumes are managed by Docker and stored in Docker's data directory. They persist across container removals.
+
+```bash
+# Create a named volume
+docker volume create db-data
+
+# Mount it when running a container
+docker run -d \
+  --name mydb \
+  -v db-data:/var/lib/postgresql/data \
+  postgres:16
+
+# Data survives container removal and recreation
+docker rm mydb
+docker run -d --name mydb -v db-data:/var/lib/postgresql/data postgres:16
+# ✅ Data is still there!
+```
+
+---
+
+## Bind Mounts — Sync Host Files to Container
+
+A bind mount maps a directory on your **host machine** to a directory in the container. Essential for development — changes you make in your editor immediately reflect inside the container.
+
+```bash
+# Sync your source code into the container
+docker run -d \
+  --name my-api \
+  -v $(pwd)/src:/app/src \
+  -p 3000:3000 \
+  my-api:dev
+# Any file saved in ./src on your machine is instantly visible in /app/src
+```
+
+```yaml
+# docker-compose.yml — easier to manage
+services:
+  api:
+    image: my-api:dev
+    volumes:
+      - ./src:/app/src          # bind mount for hot reload
+      - node_modules:/app/node_modules  # named volume to protect node_modules
+    ports:
+      - "3000:3000"
+```
+
+---
+
+## Volume Types Comparison
+
+| Type | Storage Location | Use Case |
+|---|---|---|
+| **Named Volume** | Docker manages it | Databases, persistent app data |
+| **Bind Mount** | Your host filesystem | Development, source code sync |
+| **tmpfs Mount** | Memory only (Linux) | Sensitive data, temp scratch space |
+
+---
+
+## Inspecting Volumes
+
+```bash
+docker volume ls                    # List all volumes
+docker volume inspect db-data       # Show volume details & mount point
+docker volume rm db-data            # Remove a volume
+docker volume prune                 # Remove all unused volumes
+```
+
+---
+
+## Docker Compose with Volumes
+
+```yaml
+version: '3.9'
+
+services:
+  api:
+    build: .
+    ports: ["3000:3000"]
+    depends_on: [db]
+    environment:
+      DATABASE_URL: postgres://user:pass@db:5432/mydb
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: mydb
+    volumes:
+      - postgres-data:/var/lib/postgresql/data  # persist the DB
+
+volumes:
+  postgres-data:   # declare the named volume
+```
+
+```bash
+docker compose up -d    # start everything
+docker compose down     # stop (data persists)
+docker compose down -v  # stop AND delete volumes (careful!)
+```

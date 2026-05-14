@@ -1,0 +1,131 @@
+---
+title: "Types & Interfaces"
+description: "Learn the two primary ways to define object shapes in TypeScript — types and interfaces — and when to use each one."
+order: 1
+---
+
+TypeScript gives you two powerful tools for describing the shape of an object: **`type`** aliases and **`interface`** declarations. They are similar but have key differences that make each better suited for different situations.
+
+---
+
+## Type Aliases
+
+A `type` alias gives a name to *any* TypeScript type — primitives, objects, unions, tuples, and more.
+
+```ts
+// Object shape
+type User = {
+  id: number;
+  name: string;
+  email: string;
+  role: "admin" | "viewer"; // Union type — can be one of these values
+};
+
+// Using the type
+const currentUser: User = {
+  id: 1,
+  name: "Ada Lovelace",
+  email: "ada@example.com",
+  role: "admin",
+};
+
+// Type aliases can represent anything
+type ID = string | number;         // Union
+type Pair = [string, number];      // Tuple
+type Callback = () => void;        // Function
+```
+
+---
+
+## Interfaces
+
+An `interface` is specifically for describing the shape of an **object** or **class**. The syntax is slightly different and they have a unique superpower: **declaration merging**.
+
+```ts
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+}
+
+// You can add properties to an interface after the fact
+// (declaration merging — this is unique to interfaces)
+interface Product {
+  inStock: boolean;
+}
+
+// Now Product has all 4 properties
+const laptop: Product = {
+  id: 42,
+  name: "MacBook Pro",
+  price: 2499,
+  inStock: true,
+};
+```
+
+---
+
+## Extending & Intersecting
+
+Both can be extended, but the syntax differs.
+
+```ts
+// Extending an interface
+interface Animal {
+  name: string;
+}
+
+interface Dog extends Animal {
+  breed: string;
+}
+
+// Extending a type (called an "intersection")
+type Animal = { name: string };
+type Dog = Animal & { breed: string };
+
+// Both result in the same shape:
+const myDog: Dog = { name: "Buddy", breed: "Labrador" };
+```
+
+---
+
+## Optional & Readonly Properties
+
+```ts
+type Config = {
+  host: string;
+  port?: number;        // Optional — may or may not be present
+  readonly apiKey: string; // Readonly — cannot be changed after assignment
+};
+
+const config: Config = {
+  host: "localhost",
+  apiKey: "super-secret-key",
+};
+
+config.apiKey = "new-key"; // ❌ Error: Cannot assign to 'apiKey' because it is a read-only property
+config.port = 3000;        // ✅ Optional properties can be set freely
+```
+
+---
+
+## Interactive Lab: Type-Safe Form Validator
+
+<InteractiveLab title="typescript/types-and-interfaces">
+  <TypesLab />
+</InteractiveLab>
+
+---
+
+## When to Use Which?
+
+| Situation | Use |
+|-----------|-----|
+| Describing object shapes (general) | Either — choose one and be consistent |
+| Defining a public API / library | **`interface`** (declaration merging) |
+| Union or intersection types | **`type`** |
+| Primitive aliases (`type ID = string`) | **`type`** |
+| Tuple types | **`type`** |
+| Extending built-in types (DOM, etc.) | **`interface`** |
+
+> **Rule of thumb used by most teams:** use `interface` for objects, `type` for everything else.

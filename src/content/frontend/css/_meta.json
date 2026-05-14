@@ -1,0 +1,14 @@
+{
+  "intro": {
+    "order": 0,
+    "title": "Introduction to CSS"
+  },
+  "css-variables": {
+    "order": 1,
+    "title": "CSS Custom Properties"
+  },
+  "animations": {
+    "order": 2,
+    "title": "Animations & Transitions"
+  }
+}

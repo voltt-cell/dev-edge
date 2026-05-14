@@ -1,0 +1,158 @@
+---
+title: "Branching Strategies"
+description: "Master Git branching — how branches work under the hood, merging vs. rebasing, and the professional workflows used by teams shipping production software daily."
+order: 1
+---
+
+Branches are what make Git powerful for teams. They let you develop features in isolation, experiment without fear, and merge work together in a controlled way.
+
+---
+
+## What is a Branch?
+
+A branch is just a **lightweight, movable pointer to a commit**. Creating a branch doesn't copy any files — it creates a 41-byte file containing a commit hash.
+
+```
+main:    A → B → C → D
+                      ↑
+                   (HEAD)
+
+# After: git checkout -b feature/auth
+main:    A → B → C → D
+                      ↑
+feature/auth:        D (same commit, new pointer)
+```
+
+---
+
+## Core Branch Commands
+
+```bash
+# Create & switch
+git branch feature/login          # Create branch (stay on current)
+git checkout -b feature/login     # Create AND switch (classic)
+git switch -c feature/login       # Create AND switch (modern)
+
+# Navigate
+git switch main                   # Switch branches
+git switch -                      # Switch to previous branch (handy!)
+
+# List & Delete
+git branch                        # List local branches
+git branch -a                     # List all (including remote)
+git branch -d feature/login       # Delete (safe — won't delete unmerged)
+git branch -D feature/login       # Force delete
+
+# Remote
+git push -u origin feature/login  # Push and track remote branch
+git fetch --prune                 # Update remote branch list
+```
+
+---
+
+## Merging
+
+Merging integrates changes from one branch into another.
+
+### Fast-Forward Merge
+When the target branch has no new commits since the branch point, Git simply moves the pointer forward.
+
+```bash
+git switch main
+git merge feature/login
+
+# Before:    main: A → B → C
+#            feature/login: A → B → C → D → E
+#
+# After:     main: A → B → C → D → E  (fast-forward)
+```
+
+### Three-Way Merge
+When both branches have diverged, Git creates a **merge commit** that has two parents.
+
+```bash
+# Before:
+# main:          A → B → C → F
+# feature/login: A → B → C → D → E
+
+# After git merge feature/login:
+# main:          A → B → C → F → G (merge commit, 2 parents)
+#                              ↗
+# feature/login: → D → E ────┘
+```
+
+---
+
+## Rebasing: Linear History
+
+Rebase replays your branch's commits on top of another branch, creating a clean linear history.
+
+```bash
+git switch feature/login
+git rebase main
+
+# Before:
+# main:    A → B → C → F
+# feature: A → B → C → D → E
+
+# After git rebase main:
+# main:    A → B → C → F
+# feature: A → B → C → F → D' → E'  (new commits, same changes)
+```
+
+### Merge vs. Rebase
+
+| | Merge | Rebase |
+|---|---|---|
+| History | Preserves true history with merge commits | Clean, linear history |
+| Safety | Safe — never rewrites commits | Rewrites history — **never rebase shared branches** |
+| Traceability | Shows exactly when branches diverged | Harder to trace origin |
+| Use for | Long-lived feature branches, releases | Local cleanup before PR |
+
+---
+
+## Professional Workflows
+
+### GitHub Flow (Simple, Web-First)
+```
+main → feature/branch → Pull Request → Code Review → Squash & Merge → main
+```
+- `main` is always deployable
+- All work happens on short-lived feature branches
+- PRs are reviewed and merged (often squashed) into `main`
+- Deploy on merge
+
+### Git Flow (Release-Oriented)
+```
+main        ← production-stable
+develop     ← integration branch
+feature/*   ← features (branch from develop)
+release/*   ← release prep (branch from develop)
+hotfix/*    ← emergency fixes (branch from main)
+```
+- More structure, better for versioned software
+- Heavier process — overkill for continuous deployment teams
+
+---
+
+## Resolving Merge Conflicts
+
+Conflicts happen when two branches modify the same part of a file.
+
+```bash
+# Git marks the conflict in the file:
+<<<<<<< HEAD (your branch)
+const PORT = 3000;
+=======
+const PORT = process.env.PORT || 8080;
+>>>>>>> feature/env-config
+
+# Edit the file to keep what you want, then:
+git add src/config.ts
+git commit  # or git rebase --continue if rebasing
+```
+
+**Tips:**
+- Use VS Code's built-in merge conflict editor
+- Configure `git config merge.tool vscode`
+- Keep commits small and focused — fewer conflicts

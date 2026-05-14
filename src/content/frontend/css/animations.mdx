@@ -1,0 +1,136 @@
+---
+title: "Animations & Transitions"
+description: "Add life to your UI with CSS transitions and keyframe animations — the building blocks of premium micro-interactions."
+order: 2
+---
+
+Great UIs feel alive. CSS **transitions** and **animations** are what separate a flat, static interface from one that feels premium and polished.
+
+---
+
+## Transitions: Smooth State Changes
+
+A `transition` smoothly animates a property change triggered by a state change (like `:hover`).
+
+```css
+.button {
+  background-color: #10b981;
+  transform: scale(1);
+  /* property  duration  timing-function  delay */
+  transition: background-color 200ms ease, transform 150ms ease;
+}
+
+.button:hover {
+  background-color: #059669;
+  transform: scale(1.05);
+}
+```
+
+### Transition Properties
+
+| Property | What it controls |
+|---|---|
+| `transition-property` | Which CSS property to animate (`all`, `opacity`, etc.) |
+| `transition-duration` | How long the animation takes (`200ms`, `0.5s`) |
+| `transition-timing-function` | The easing curve (`ease`, `linear`, `ease-in-out`, `cubic-bezier(...)`) |
+| `transition-delay` | How long to wait before starting |
+
+---
+
+## Keyframe Animations: Complex Sequences
+
+For multi-step animations, use `@keyframes`:
+
+```css
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card-enter {
+  animation: fadeInUp 400ms ease-out forwards;
+}
+```
+
+### The `animation` Shorthand
+
+```css
+/* name  duration  easing  delay  iterations  direction  fill-mode */
+animation: spin 1s linear 0s infinite normal none;
+
+/* Practical examples */
+.spinner { animation: spin 1s linear infinite; }
+.hero-text { animation: fadeInUp 600ms ease-out forwards; }
+.pulse { animation: pulse 2s ease-in-out infinite; }
+```
+
+---
+
+## Performance: GPU-Accelerated Properties
+
+Not all properties are equal. Animating these four triggers only compositing (GPU) — fast and jank-free:
+
+| Property | Use for |
+|---|---|
+| `transform` | Move, scale, rotate |
+| `opacity` | Fade in/out |
+| `filter` | Blur, brightness |
+| `clip-path` | Shape reveals |
+
+Avoid animating `width`, `height`, `margin`, `padding`, or `top/left` — these trigger layout recalculation, causing jank.
+
+```css
+/* ❌ Triggers layout — avoid */
+.bad { transition: width 300ms; }
+
+/* ✅ GPU-accelerated — use this */
+.good { transition: transform 300ms; }
+```
+
+---
+
+## Reduced Motion: Accessibility
+
+Always respect users who prefer reduced motion. Some users get motion sickness from animations.
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+```
+
+---
+
+## Essential Micro-Interaction Patterns
+
+```css
+/* Lift on hover */
+.card {
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Button press */
+.button:active {
+  transform: scale(0.97);
+}
+
+/* Focus ring */
+.input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.4);
+  transition: box-shadow 150ms ease;
+}
+```

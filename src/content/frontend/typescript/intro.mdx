@@ -1,0 +1,106 @@
+---
+title: "Introduction to TypeScript"
+description: "Understand why TypeScript exists, how it supercharges JavaScript, and how to think in types from day one."
+order: 0
+---
+
+TypeScript is a **statically typed superset of JavaScript** built by Microsoft. It compiles down to plain JavaScript, which means it runs everywhere JavaScript runs — browsers, Node.js, Deno — but gives you an entirely new layer of safety during development.
+
+Think of it as JavaScript with a built-in safety net. Instead of discovering that you called `.toUpperCase()` on a number at runtime (and crashing your app in production), TypeScript tells you about the error *as you type*.
+
+### Why TypeScript?
+
+JavaScript is dynamic. That's both its strength and its greatest weakness in large codebases.
+
+```js
+// JavaScript: this crashes at runtime. No warning.
+function greet(user) {
+  return user.name.toUpperCase();
+}
+greet(null); // 💥 TypeError: Cannot read properties of null
+```
+
+TypeScript catches this before you ever run the code:
+
+```ts
+// TypeScript: caught at compile time. ✅
+function greet(user: { name: string }) {
+  return user.name.toUpperCase();
+}
+greet(null); // ❌ Error: Argument of type 'null' is not assignable
+```
+
+---
+
+## Core Benefits
+
+- **Catch bugs early** — Type errors are flagged in your editor immediately
+- **Better IntelliSense** — Autocomplete, refactoring, and "Go to Definition" that actually works
+- **Self-documenting code** — Function signatures tell you exactly what they expect and return
+- **Scales with teams** — Essential for large codebases where you can't hold every function signature in your head
+
+---
+
+## Your First TypeScript
+
+TypeScript adds a **type annotation** syntax using `:` after a variable or parameter name.
+
+```ts
+// Primitive types
+let username: string = "ada_lovelace";
+let score: number = 100;
+let isActive: boolean = true;
+
+// Arrays
+let tags: string[] = ["typescript", "react"];
+let scores: number[] = [95, 87, 100];
+
+// Functions — annotate parameters AND return type
+function add(a: number, b: number): number {
+  return a + b;
+}
+
+// TypeScript can also infer types — you don't always need to annotate!
+let inferred = "TypeScript figures this out"; // type: string
+```
+
+---
+
+## Type Inference: TypeScript is Smart
+
+You don't need to annotate everything. TypeScript **infers** types based on how you use values. Only add annotations where inference can't figure it out (like function parameters).
+
+```ts
+// ✅ TypeScript infers 'count' is a number
+let count = 0;
+count = "hello"; // ❌ Error: Type 'string' is not assignable to type 'number'
+
+// ✅ TypeScript infers the return type is 'number'
+function multiply(x: number, y: number) {
+  return x * y;
+}
+```
+
+---
+
+## The `any` Type — Use Sparingly
+
+TypeScript has an escape hatch called `any`. It opts a value out of type checking entirely. It's tempting to use when you're stuck, but it defeats the purpose of TypeScript.
+
+```ts
+let dangerous: any = "hello";
+dangerous = 42;          // ✅ no error
+dangerous.toUpperCase(); // ✅ no error (but WILL crash at runtime!)
+
+// Prefer 'unknown' over 'any' when you genuinely don't know the type
+let safe: unknown = fetchSomething();
+if (typeof safe === "string") {
+  safe.toUpperCase(); // ✅ TypeScript now knows it's safe
+}
+```
+
+---
+
+## Next Steps
+
+In the next lesson, you'll learn about **Types & Interfaces** — the two primary ways to define the shape of complex objects in TypeScript, and when to use each.

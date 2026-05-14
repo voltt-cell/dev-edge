@@ -1,12 +1,123 @@
 ---
-title: Introduction
-description: Learn about introduction in docker
+title: "Introduction to Docker"
+description: "Understand containers, images, and why Docker solves the 'it works on my machine' problem once and for all."
+order: 0
 ---
 
-# Introduction to introduction
+Docker is a platform for building, shipping, and running applications in **containers** — lightweight, isolated environments that package your application and all its dependencies together.
 
-This is a generated lesson on introduction.
+---
 
-## Interactive Demo
+## The Problem Docker Solves
 
-{/* Replace this with an interactive component */}
+You build an app on macOS with Node 20. Your colleague has Node 18 on Linux. Your production server runs Node 16. The app behaves differently everywhere.
+
+Docker solves this by packaging your app **with its entire environment** — runtime, dependencies, config — into a portable unit called a **container**.
+
+```
+Without Docker:                    With Docker:
+┌───────────────┐                  ┌───────────────────────────────┐
+│ macOS + Node20│ ← works          │     Docker Container          │
+├───────────────┤                  │  ┌─────────────────────────┐  │
+│ Linux + Node18│ ← maybe breaks   │  │  Your App               │  │
+├───────────────┤                  │  │  Node 20                │  │
+│ Server + Node16│ ← definitely    │  │  exact dependencies     │  │
+│               │   breaks         │  └─────────────────────────┘  │
+└───────────────┘                  │  runs identically everywhere   │
+                                   └───────────────────────────────┘
+```
+
+---
+
+## Core Concepts
+
+### Image
+A read-only blueprint for a container. Built from a `Dockerfile`. Images are layered — each instruction adds a layer.
+
+### Container
+A running instance of an image. You can run many containers from the same image simultaneously.
+
+### Dockerfile
+A text file with instructions for building an image.
+
+### Registry
+A storage and distribution system for images. Docker Hub is the default public registry.
+
+---
+
+## Your First Dockerfile
+
+```dockerfile
+# Start from an official base image
+FROM node:20-alpine
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy package files first (for layer caching)
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci --only=production
+
+# Copy the rest of the application code
+COPY . .
+
+# Expose the port the app listens on
+EXPOSE 3000
+
+# The command to run when the container starts
+CMD ["node", "src/index.js"]
+```
+
+Build and run:
+```bash
+docker build -t my-api:latest .
+docker run -p 3000:3000 my-api:latest
+```
+
+---
+
+## Essential Docker Commands
+
+```bash
+# Images
+docker build -t my-app:v1 .          # Build an image from Dockerfile
+docker pull node:20-alpine            # Download an image from registry
+docker images                         # List local images
+docker rmi my-app:v1                  # Remove an image
+
+# Containers
+docker run -p 3000:3000 my-app:v1    # Run a container
+docker run -d -p 3000:3000 my-app    # Run detached (background)
+docker ps                             # List running containers
+docker ps -a                          # List all containers (incl. stopped)
+docker stop <id>                      # Stop a container
+docker logs <id>                      # View container logs
+docker exec -it <id> sh               # Open a shell inside a container
+```
+
+---
+
+## Layer Caching: The Key to Fast Builds
+
+Docker caches each layer. If a layer hasn't changed, it reuses the cache — making subsequent builds much faster.
+
+```dockerfile
+# ✅ GOOD: Copy package.json first, then install
+# If only source code changes, npm install is CACHED
+COPY package*.json ./
+RUN npm ci
+COPY . .
+
+# ❌ BAD: Copy everything first
+# Any file change invalidates the npm install cache
+COPY . .
+RUN npm ci
+```
+
+---
+
+## Next Steps
+
+Up next: **Docker Volumes** — how to persist data across container restarts and share files between your host machine and containers.

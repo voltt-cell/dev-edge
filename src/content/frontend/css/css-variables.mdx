@@ -1,0 +1,121 @@
+---
+title: "CSS Custom Properties"
+description: "Build maintainable, themeable design systems using CSS custom properties (variables) — the native alternative to Sass variables."
+order: 1
+---
+
+CSS Custom Properties (also called CSS variables) let you define reusable values in one place and reference them throughout your stylesheet. They are the backbone of modern design systems.
+
+---
+
+## Defining & Using Variables
+
+Variables are defined with a `--` prefix and consumed with `var()`.
+
+```css
+/* Define on :root to make them globally available */
+:root {
+  --color-primary: #10b981;
+  --color-bg: #0a0a0a;
+  --color-text: #f1f5f9;
+  --spacing-md: 1.5rem;
+  --radius-lg: 12px;
+  --font-sans: 'Inter', sans-serif;
+}
+
+.button {
+  background-color: var(--color-primary);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-sans);
+}
+```
+
+---
+
+## Theming with Custom Properties
+
+The real power of CSS variables is **runtime theming**. Because they cascade like regular properties, you can swap an entire theme by changing values on a parent element.
+
+```css
+:root {
+  --bg: #ffffff;
+  --text: #111111;
+  --surface: #f5f5f5;
+}
+
+/* Dark mode — just override the variables */
+[data-theme="dark"] {
+  --bg: #0a0a0a;
+  --text: #f1f5f9;
+  --surface: #1a1a2e;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.card {
+  background: var(--surface);
+}
+```
+
+Toggle the theme in JavaScript:
+```js
+document.documentElement.setAttribute('data-theme', 'dark');
+```
+
+---
+
+## Fallback Values
+
+`var()` accepts a fallback as a second argument:
+
+```css
+.card {
+  /* If --radius is not defined, fall back to 8px */
+  border-radius: var(--radius, 8px);
+  
+  /* Chained fallbacks */
+  color: var(--color-brand, var(--color-primary, #10b981));
+}
+```
+
+---
+
+## Scoped Variables
+
+Variables can be scoped to a component, overriding the global values only within that subtree:
+
+```css
+:root { --color-primary: #10b981; }
+
+/* This button variant overrides the primary color just for itself */
+.button--danger {
+  --color-primary: #ef4444;
+  background-color: var(--color-primary); /* uses #ef4444 */
+}
+```
+
+---
+
+## Interactive Lab: Live Theme Builder
+
+<InteractiveLab title="css/custom-properties">
+  <CSSVariablesLab />
+</InteractiveLab>
+
+---
+
+## CSS Variables vs. Sass Variables
+
+| Feature | CSS Custom Properties | Sass Variables |
+|---|---|---|
+| Runtime changeable | ✅ Yes | ❌ No (compiled away) |
+| JavaScript accessible | ✅ Yes | ❌ No |
+| Cascades & inherits | ✅ Yes | ❌ No |
+| Browser DevTools visible | ✅ Yes | ❌ No |
+| Requires build step | ❌ No | ✅ Yes |
+
+CSS Custom Properties are strictly more powerful for design systems. Use them.

@@ -1,0 +1,10 @@
+{
+  "intro": {
+    "order": 0,
+    "title": "Introduction to Git"
+  },
+  "branching": {
+    "order": 1,
+    "title": "Branching Strategies"
+  }
+}

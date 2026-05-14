@@ -1,0 +1,196 @@
+---
+title: "Utility Types"
+description: "Master TypeScript's built-in utility types — Partial, Required, Pick, Omit, Record, and more — to transform and derive types without writing them from scratch."
+order: 3
+---
+
+TypeScript ships with a powerful set of **built-in utility types** that let you transform existing types into new ones. Instead of rewriting interfaces by hand, you can derive exactly the type you need from one you already have.
+
+These are used constantly in production React and Node.js codebases.
+
+---
+
+## `Partial<T>` — Make All Properties Optional
+
+Perfect for update/patch operations where you only want to send the fields that changed.
+
+```ts
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: "admin" | "viewer";
+}
+
+// All properties become optional
+type UserUpdate = Partial<User>;
+// Equivalent to: { id?: number; name?: string; email?: string; role?: ... }
+
+function updateUser(id: number, patch: UserUpdate): User {
+  // fetch existing user, apply patch...
+  return { ...existingUser, ...patch };
+}
+
+// ✅ Only send what changed
+updateUser(1, { name: "New Name" });
+updateUser(1, { email: "new@example.com", role: "admin" });
+```
+
+---
+
+## `Required<T>` — Make All Properties Required
+
+The opposite of `Partial`. Strips all `?` from a type.
+
+```ts
+interface Config {
+  host?: string;
+  port?: number;
+  ssl?: boolean;
+}
+
+// All properties are now required
+type StrictConfig = Required<Config>;
+
+const config: StrictConfig = {
+  host: "localhost", // ✅ must provide all three now
+  port: 3000,
+  ssl: true,
+};
+```
+
+---
+
+## `Pick<T, K>` — Select a Subset of Properties
+
+Extract only the properties you need from a larger type.
+
+```ts
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  passwordHash: string; // sensitive!
+  createdAt: Date;
+}
+
+// Safe to expose to the client — no sensitive fields
+type PublicUser = Pick<User, "id" | "name" | "email">;
+
+function getProfile(userId: number): PublicUser {
+  // Never accidentally returns passwordHash
+  return { id: 1, name: "Ada", email: "ada@example.com" };
+}
+```
+
+---
+
+## `Omit<T, K>` — Exclude Specific Properties
+
+The inverse of `Pick`. Keeps everything *except* the listed keys.
+
+```ts
+// Omit the sensitive field and the auto-generated id
+type CreateUserDto = Omit<User, "id" | "passwordHash" | "createdAt">;
+// Result: { name: string; email: string }
+
+function createUser(data: CreateUserDto): User {
+  return {
+    ...data,
+    id: Math.random(),
+    passwordHash: hash(data.email),
+    createdAt: new Date(),
+  };
+}
+```
+
+---
+
+## `Record<K, V>` — Build Typed Maps/Dictionaries
+
+Creates an object type where all keys are of type `K` and all values are of type `V`.
+
+```ts
+// Map role names to their permission levels
+type Role = "admin" | "editor" | "viewer";
+
+const permissions: Record<Role, string[]> = {
+  admin:  ["read", "write", "delete"],
+  editor: ["read", "write"],
+  viewer: ["read"],
+};
+
+// A lookup table — keys are strings, values are numbers
+const httpStatusMessages: Record<number, string> = {
+  200: "OK",
+  404: "Not Found",
+  500: "Internal Server Error",
+};
+```
+
+---
+
+## `ReturnType<T>` — Extract a Function's Return Type
+
+Derive a type from what a function returns. Essential when you don't control the function's definition.
+
+```ts
+function createSession() {
+  return {
+    token: "abc123",
+    expiresAt: new Date(),
+    userId: 42,
+  };
+}
+
+// Derive the type without repeating yourself
+type Session = ReturnType<typeof createSession>;
+// { token: string; expiresAt: Date; userId: number }
+
+function validateSession(session: Session): boolean {
+  return session.expiresAt > new Date();
+}
+```
+
+---
+
+## Combining Utility Types
+
+The real power comes from composing them:
+
+```ts
+interface BlogPost {
+  id: number;
+  title: string;
+  body: string;
+  authorId: number;
+  publishedAt: Date | null;
+  tags: string[];
+}
+
+// A DTO for creating a post: no id (auto-generated), no publishedAt (set on publish)
+type CreatePostDto = Omit<BlogPost, "id" | "publishedAt">;
+
+// A DTO for updating a post: everything optional, still no id/publishedAt
+type UpdatePostDto = Partial<Omit<BlogPost, "id" | "publishedAt">>;
+
+// What to return in a list view (no body)
+type PostSummary = Pick<BlogPost, "id" | "title" | "authorId" | "tags">;
+```
+
+---
+
+## Quick Reference
+
+| Utility Type | What it does |
+|---|---|
+| `Partial<T>` | All properties optional |
+| `Required<T>` | All properties required |
+| `Readonly<T>` | All properties read-only |
+| `Pick<T, K>` | Keep only listed keys |
+| `Omit<T, K>` | Exclude listed keys |
+| `Record<K, V>` | Object map with typed keys & values |
+| `ReturnType<T>` | The return type of a function |
+| `Parameters<T>` | Tuple of a function's parameter types |
+| `Awaited<T>` | Unwrap a `Promise<T>` to `T` |
+| `NonNullable<T>` | Remove `null` and `undefined` from a type |

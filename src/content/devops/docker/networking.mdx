@@ -1,0 +1,115 @@
+---
+title: "Docker Networking"
+description: "Connect containers together and to the outside world using Docker's networking model — bridge networks, service discovery, and multi-container apps."
+order: 2
+---
+
+By default, each container is an isolated network namespace. Docker networking lets you **connect containers to each other** and control how they communicate with the outside world.
+
+---
+
+## Network Drivers
+
+| Driver | Use Case |
+|---|---|
+| `bridge` | Default. Container-to-container on the same host. |
+| `host` | Container shares the host's network stack (Linux only). |
+| `none` | No networking. Fully isolated. |
+| `overlay` | Multi-host networking (Docker Swarm / Kubernetes). |
+
+---
+
+## The Default Bridge Network
+
+When you run a container without specifying a network, it joins the default `bridge` network. Containers can communicate via IP, but **not by name** on the default bridge.
+
+```bash
+docker run -d --name container1 nginx
+docker run -d --name container2 nginx
+
+# On default bridge: must use IP to communicate
+docker inspect container1 | grep IPAddress
+# "IPAddress": "172.17.0.2"
+
+# Inside container2:
+# curl http://172.17.0.2  ← works but brittle
+# curl http://container1  ← ❌ FAILS on default bridge
+```
+
+---
+
+## Custom Bridge Networks — The Right Way
+
+On a **user-defined bridge network**, containers can reach each other by **container name** — automatic DNS resolution. Always use custom networks for multi-container apps.
+
+```bash
+# Create a network
+docker network create myapp-network
+
+# Connect containers to it
+docker run -d --name api    --network myapp-network my-api:latest
+docker run -d --name db     --network myapp-network postgres:16
+docker run -d --name cache  --network myapp-network redis:7
+
+# Inside the 'api' container:
+# psql -h db          ← ✅ resolves by name
+# redis-cli -h cache  ← ✅ resolves by name
+```
+
+---
+
+## Docker Compose: Networking Made Easy
+
+Docker Compose automatically creates a **custom bridge network** for all services in a `docker-compose.yml`. Services discover each other by service name out of the box.
+
+```yaml
+services:
+  api:
+    build: .
+    ports:
+      - "3000:3000"           # HOST:CONTAINER — expose to outside world
+    environment:
+      REDIS_URL: redis://cache:6379   # use service name 'cache'
+      DATABASE_URL: postgres://postgres:pass@db:5432/mydb
+
+  db:
+    image: postgres:16
+    # No 'ports' — only accessible INSIDE the compose network
+    environment:
+      POSTGRES_PASSWORD: pass
+
+  cache:
+    image: redis:7-alpine
+    # No 'ports' — only accessible INSIDE the compose network
+```
+
+```
+Internet → PORT 3000 → [api container]
+                            ↓ internal network
+                        [db] ← [cache]
+```
+
+Only `api` is exposed to the internet. The database and cache are reachable internally but never exposed publicly.
+
+---
+
+## Port Mapping
+
+```bash
+# -p HOST_PORT:CONTAINER_PORT
+docker run -p 3000:3000 my-api    # localhost:3000 → container:3000
+docker run -p 8080:3000 my-api    # localhost:8080 → container:3000
+docker run -p 127.0.0.1:3000:3000 my-api  # only bind to loopback
+```
+
+---
+
+## Useful Network Commands
+
+```bash
+docker network ls                      # List all networks
+docker network inspect myapp-network   # Inspect a network
+docker network create myapp-network    # Create a network
+docker network connect myapp-network container1  # Connect a running container
+docker network rm myapp-network        # Remove a network
+```

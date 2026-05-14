@@ -1,0 +1,112 @@
+---
+title: "Introduction to Node.js"
+description: "Understand what Node.js is, how it differs from browser JavaScript, and why it powers the majority of modern backend APIs."
+order: 0
+---
+
+Node.js is a **JavaScript runtime built on Chrome's V8 engine**. It lets you run JavaScript outside the browser — on servers, build tools, CLIs, and scripts. It's the foundation of tools like Next.js, Webpack, ESLint, and the npm ecosystem.
+
+---
+
+## Why Node.js?
+
+Before Node.js (2009), the backend world was dominated by Java, Python, Ruby, and PHP. Node.js introduced something radical: **non-blocking, event-driven I/O** — which means it can handle thousands of concurrent connections without spawning a thread per request.
+
+```
+Traditional (thread-per-request):         Node.js (event loop):
+┌─────────┐ ← Request 1                   ┌──────────────┐
+│ Thread 1│   (waiting for DB)             │  Event Loop  │ ← handles all
+├─────────┤ ← Request 2                   │  (single     │   requests
+│ Thread 2│   (waiting for DB)             │   thread)    │
+├─────────┤ ← Request 3                   └──────────────┘
+│ Thread 3│   (waiting for DB)              Callbacks fire when I/O completes
+└─────────┘
+  = massive memory overhead               = minimal overhead
+```
+
+---
+
+## Your First Node.js Server
+
+```js
+import http from 'node:http';
+
+const server = http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify({ message: 'Hello from Node.js!', url: req.url }));
+});
+
+server.listen(3000, () => {
+  console.log('Server running at http://localhost:3000');
+});
+```
+
+---
+
+## Node.js vs. Browser JavaScript
+
+| Feature | Browser JS | Node.js |
+|---|---|---|
+| DOM / `document` | ✅ | ❌ |
+| File system (`fs`) | ❌ | ✅ |
+| `window` / `alert` | ✅ | ❌ |
+| `process`, `__dirname` | ❌ | ✅ |
+| HTTP servers | ❌ | ✅ |
+| npm packages | ✅ (bundled) | ✅ (native) |
+| ES Modules | ✅ | ✅ (with `.mjs` or `"type": "module"`) |
+
+---
+
+## The `node:` Built-in Modules
+
+Node.js ships with a rich standard library. Use the `node:` prefix (modern best practice):
+
+```js
+import fs from 'node:fs/promises';     // File system
+import path from 'node:path';           // Path utilities
+import http from 'node:http';           // HTTP server
+import crypto from 'node:crypto';       // Hashing, encryption
+import os from 'node:os';               // OS information
+import { EventEmitter } from 'node:events'; // Event system
+
+// Read a file asynchronously
+const data = await fs.readFile('./config.json', 'utf8');
+const config = JSON.parse(data);
+```
+
+---
+
+## The npm Ecosystem
+
+Node.js's killer feature is access to **npm** — the world's largest package registry with 2M+ packages.
+
+```bash
+# Initialize a project
+npm init -y
+
+# Install a package
+npm install express
+
+# Install a dev dependency
+npm install --save-dev typescript
+
+# Run a script from package.json
+npm run dev
+```
+
+---
+
+## When to Use Node.js
+
+- ✅ **REST APIs & GraphQL servers** — Express, Fastify, Hono
+- ✅ **Real-time apps** — WebSockets, Socket.IO
+- ✅ **Build tools & CLIs** — Webpack, Vite, ESLint, Prettier
+- ✅ **Serverless functions** — AWS Lambda, Vercel, Cloudflare Workers
+- ✅ **I/O-heavy workloads** — file processing, proxies, streaming
+- ❌ **CPU-intensive tasks** — image processing, ML (use Python/Go instead)
+
+---
+
+## Next Up
+
+In the next lesson, you'll deep-dive into Node.js's **Event Loop** — the core mechanism that makes it capable of handling massive concurrency on a single thread.

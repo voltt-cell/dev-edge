@@ -1,0 +1,169 @@
+---
+title: "Building REST APIs"
+description: "Design and build production-quality REST APIs with Node.js and Express — including routing, middleware, validation, and error handling."
+order: 2
+---
+
+REST (Representational State Transfer) is the dominant architectural style for web APIs. It models your application as a set of **resources** (users, posts, products) accessed via standard HTTP methods.
+
+---
+
+## REST API Conventions
+
+```
+GET    /users           → List all users
+GET    /users/:id       → Get one user
+POST   /users           → Create a new user
+PUT    /users/:id       → Replace a user (full update)
+PATCH  /users/:id       → Update a user (partial)
+DELETE /users/:id       → Delete a user
+```
+
+HTTP status codes signal the outcome:
+
+| Code | Meaning |
+|---|---|
+| `200 OK` | Success |
+| `201 Created` | Resource created |
+| `204 No Content` | Success, nothing to return |
+| `400 Bad Request` | Invalid input |
+| `401 Unauthorized` | Not authenticated |
+| `403 Forbidden` | Authenticated but not authorized |
+| `404 Not Found` | Resource doesn't exist |
+| `500 Internal Server Error` | Something went wrong on the server |
+
+---
+
+## Building with Express
+
+Express is the most widely used Node.js web framework — minimal, flexible, and battle-tested.
+
+```bash
+npm install express
+npm install --save-dev @types/express typescript
+```
+
+```ts
+import express from 'express';
+
+const app = express();
+app.use(express.json()); // Parse JSON request bodies
+
+// In-memory "database" for this example
+const users = new Map<number, { id: number; name: string; email: string }>();
+let nextId = 1;
+
+// GET /users — list all
+app.get('/users', (req, res) => {
+  res.json({ data: Array.from(users.values()) });
+});
+
+// GET /users/:id — get one
+app.get('/users/:id', (req, res) => {
+  const user = users.get(Number(req.params.id));
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  res.json({ data: user });
+});
+
+// POST /users — create
+app.post('/users', (req, res) => {
+  const { name, email } = req.body;
+  if (!name || !email) {
+    return res.status(400).json({ error: 'name and email are required' });
+  }
+  const user = { id: nextId++, name, email };
+  users.set(user.id, user);
+  res.status(201).json({ data: user });
+});
+
+// DELETE /users/:id
+app.delete('/users/:id', (req, res) => {
+  const id = Number(req.params.id);
+  if (!users.has(id)) return res.status(404).json({ error: 'User not found' });
+  users.delete(id);
+  res.status(204).send();
+});
+
+app.listen(3000, () => console.log('API running on http://localhost:3000'));
+```
+
+---
+
+## Middleware: The Express Superpower
+
+Middleware functions sit between a request and your route handler. They can log, authenticate, validate, modify the request, or short-circuit with an error response.
+
+```ts
+// Logger middleware — runs on every request
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path} — ${new Date().toISOString()}`);
+  next(); // MUST call next() to pass control to the next middleware
+});
+
+// Authentication middleware — protects specific routes
+function requireAuth(req, res, next) {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) return res.status(401).json({ error: 'No token provided' });
+  
+  try {
+    req.user = verifyJwt(token);
+    next();
+  } catch {
+    res.status(401).json({ error: 'Invalid token' });
+  }
+}
+
+// Apply to specific routes
+app.delete('/users/:id', requireAuth, (req, res) => {
+  // Only authenticated users reach here
+});
+```
+
+---
+
+## Centralized Error Handling
+
+Express has a special 4-argument error handler. Route all errors through it using `next(error)`.
+
+```ts
+// In every route — throw or call next(err) on failure
+app.get('/users/:id', async (req, res, next) => {
+  try {
+    const user = await db.findUser(req.params.id);
+    if (!user) return res.status(404).json({ error: 'Not found' });
+    res.json({ data: user });
+  } catch (err) {
+    next(err); // passes to error handler below
+  }
+});
+
+// Global error handler — MUST be defined last
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(err.status || 500).json({
+    error: err.message || 'Internal Server Error',
+  });
+});
+```
+
+---
+
+## Project Structure for Production
+
+```
+src/
+├── index.ts           # Entry point — creates app, starts server
+├── app.ts             # Express app config (middleware, routes)
+├── routes/
+│   ├── users.ts       # /users routes
+│   └── products.ts    # /products routes
+├── controllers/
+│   └── users.ts       # Business logic for user routes
+├── middleware/
+│   ├── auth.ts        # JWT verification
+│   └── validate.ts    # Request validation
+└── db/
+    └── index.ts       # Database connection
+```
+
+This separation keeps routes thin, controllers focused, and the codebase maintainable as it scales.

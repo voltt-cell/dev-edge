@@ -1,0 +1,118 @@
+---
+title: "Introduction to Git"
+description: "Master the version control system used by every professional software team — commits, staging, branching, and the mental model behind Git's object store."
+order: 0
+---
+
+Git is a **distributed version control system** created by Linus Torvalds in 2005. It tracks changes to your files, lets you collaborate with teammates, and gives you a complete history of your project — including the ability to revert to any past state.
+
+Every professional software team uses Git. Understanding it deeply is non-negotiable.
+
+---
+
+## The Three Areas of Git
+
+Understanding where your code "lives" in Git is the mental model that makes everything else click:
+
+```
+Working Directory    →    Staging Area (Index)    →    Repository (.git)
+   (your files)             git add                      git commit
+      ↑                         ↑                             ↑
+  you edit here          you stage changes            Git stores snapshots
+```
+
+- **Working Directory**: Files as they exist on your disk right now
+- **Staging Area**: A preview of your next commit — cherry-pick exactly what goes in
+- **Repository**: The permanent history of all commits, stored in `.git/`
+
+---
+
+## Essential Commands
+
+```bash
+# Start & Status
+git init                        # Initialize a repo in the current directory
+git clone <url>                 # Clone a remote repo
+git status                      # See what's changed
+
+# Staging & Committing
+git add file.ts                 # Stage a specific file
+git add .                       # Stage all changes
+git add -p                      # Interactively stage chunks (powerful!)
+git commit -m "feat: add login" # Commit with a message
+git commit --amend              # Modify the most recent commit
+
+# History
+git log --oneline --graph       # Compact visual history
+git log -p                      # Show diffs in history
+git show <hash>                 # Show a specific commit
+
+# Undoing
+git restore file.ts             # Discard working directory changes
+git restore --staged file.ts    # Unstage a file
+git revert <hash>               # Create a new commit that undoes a commit
+git reset --soft HEAD~1         # Undo last commit, keep changes staged
+```
+
+---
+
+## Commits: Snapshots, Not Diffs
+
+A common misconception: Git doesn't store diffs (patches). Each commit is a **complete snapshot** of every tracked file at that point in time. Git uses content-addressable storage — if a file hasn't changed, it reuses the same object.
+
+```bash
+git log --oneline
+# a3f12c9 feat: add user authentication
+# 7d89b1a fix: resolve null pointer in cart
+# 1c45e2a chore: update dependencies
+# 9f87a3d feat: initial project setup
+```
+
+Each hash (`a3f12c9`) uniquely identifies a snapshot of the entire codebase.
+
+---
+
+## The `.gitignore` File
+
+Tell Git which files to never track:
+
+```gitignore
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.next/
+build/
+
+# Environment files (NEVER commit secrets!)
+.env
+.env.local
+.env.production
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+```
+
+---
+
+## Conventional Commits
+
+A widely adopted standard for commit messages that makes history scannable and powers automated changelogs:
+
+```bash
+feat: add user authentication endpoint
+fix: resolve null pointer in shopping cart
+chore: update typescript to 5.4
+docs: add API documentation
+refactor: extract auth logic into middleware
+test: add unit tests for cart service
+ci: add GitHub Actions workflow
+```
+
+Format: `<type>(<optional scope>): <description>`

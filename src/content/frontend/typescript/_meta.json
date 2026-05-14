@@ -1,0 +1,18 @@
+{
+  "intro": {
+    "order": 0,
+    "title": "Introduction to TypeScript"
+  },
+  "types-and-interfaces": {
+    "order": 1,
+    "title": "Types & Interfaces"
+  },
+  "generics": {
+    "order": 2,
+    "title": "Generics"
+  },
+  "utility-types": {
+    "order": 3,
+    "title": "Utility Types"
+  }
+}

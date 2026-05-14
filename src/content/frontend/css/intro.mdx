@@ -1,0 +1,75 @@
+---
+title: "Introduction to CSS"
+description: "Go beyond inline styles. Master the cascade, specificity, and the box model — the three pillars every frontend engineer must deeply understand."
+order: 0
+---
+
+CSS (Cascading Style Sheets) is the language of visual design on the web. Mastering CSS means understanding *why* it behaves the way it does — the **cascade**, **specificity**, and **the box model**.
+
+---
+
+## The Cascade
+
+When multiple rules target the same element, CSS resolves conflicts using priority (highest to lowest):
+
+1. `!important` declarations
+2. Inline styles (`style="..."`)
+3. ID selectors (`#header`)
+4. Class / attribute / pseudo-class selectors (`.nav`, `:hover`)
+5. Element selectors (`p`, `h1`)
+6. Browser defaults
+
+```css
+p          { color: black; } /* specificity: 0,0,1 */
+.highlight { color: blue; }  /* specificity: 0,1,0 */
+#intro     { color: red; }   /* specificity: 1,0,0 — WINS */
+```
+
+---
+
+## The Box Model
+
+Every element is a rectangle with four layers:
+
+```
+┌─────── MARGIN ──────────┐
+│  ┌───── BORDER ───────┐  │
+│  │  ┌── PADDING ───┐  │  │
+│  │  │   CONTENT    │  │  │
+│  │  └──────────────┘  │  │
+│  └────────────────────┘  │
+└──────────────────────────┘
+```
+
+### Always use `border-box`
+
+By default, `width` only measures the content area. `border-box` makes `width` include padding and border — much more intuitive.
+
+```css
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+.card {
+  width: 300px;
+  padding: 24px;
+  border: 2px solid #ccc;
+  /* Total rendered width: exactly 300px */
+}
+```
+
+---
+
+## Display Modes
+
+```css
+div, p    { display: block; }         /* Full width, new line */
+span, a   { display: inline; }        /* Flows in text */
+button    { display: inline-block; }  /* Inline, but respects width/height */
+.flex-ctr { display: flex; }          /* Flex layout */
+.grid-ctr { display: grid; }          /* Grid layout */
+```
+
+---
+
+Up next: **CSS Custom Properties** — the foundation of modern design systems.
